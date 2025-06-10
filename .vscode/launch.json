@@ -1,0 +1,83 @@
+=o{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Java",
+            "type": "java",
+            "request": "launch",
+            "stopOnEntry": true,
+            "jdkPath": "${env:JAVA_HOME}/bin",
+            "cwd": "${fileDirname}",
+            "startupClass": "${fileBasenameNoExtension}",
+            "classpath": [
+                ".",
+                "${fileDirname}"
+            ]
+        },
+        {
+            "name": "Java Console App",
+            "type": "java",
+            "request": "launch",
+            "stopOnEntry": true,
+            "jdkPath": "${env:JAVA_HOME}/bin",
+            "cwd": "${fileDirname}",
+            "startupClass": "${fileBasenameNoExtension}",
+            "classpath": [
+                ".",
+                "${fileDirname}"
+            ],
+            "externalConsole": true
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Demo",
+            "request": "launch",
+            "mainClass": "Demo",
+            "projectName": "Java_DSA_ff25e38e"
+        },
+        {
+            "type": "java",
+            "name": "Arr_Is_sorted_rotated",
+            "request": "launch",
+            "mainClass": "array_01.Arr_Is_sorted_rotated",
+            "projectName": "Java_DSA_ff25e38e"
+        },
+        {
+            "type": "java",
+            "name": "Max_subArray",
+            "request": "launch",
+            "mainClass": "array_01.Max_subArray",
+            "projectName": "Java_DSA_ff25e38e"
+        },
+        {
+            "type": "java",
+            "name": "Max_value",
+            "request": "launch",
+            "mainClass": "array_01.Max_value",
+            "projectName": "Java_DSA_ff25e38e"
+        },
+        {
+            "type": "java",
+            "name": "Reverse",
+            "request": "launch",
+            "mainClass": "array_01.Reverse",
+            "projectName": "Java_DSA_ff25e38e"
+        },
+        {
+            "type": "java",
+            "name": "Zero_end",
+            "request": "launch",
+            "mainClass": "array_01.Zero_end",
+            "projectName": "Java_DSA_ff25e38e"
+        }
+    ]
+}
