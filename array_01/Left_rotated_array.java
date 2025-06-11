@@ -25,13 +25,9 @@
 //     }
 //   }   
 // }
-
-
-
 public class Left_rotated_array {
 
   public static void main(String[] args) {
-
     int arr[] = {1,2,3,4,5};
 
     for (int i : arr) {
@@ -42,7 +38,7 @@ public class Left_rotated_array {
     int k=3;
     int[]temp = new int[k];
 
-    // store 1 ,2 in kth array : 
+    // store first kth element in temp array : temp =  [1,2,3]
     for(int i=0;i<k;i++){
         temp[i] = arr[i];
     }
