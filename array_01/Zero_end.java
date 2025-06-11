@@ -3,7 +3,7 @@
 // Input: [0, 1, 0, 3, 12]  
 // Output: [1, 3, 12, 0, 0]
 //  we used here two pointer approach 
-package array_01;
+
 
 public class Zero_end {
   public static void main(String[] args) {
