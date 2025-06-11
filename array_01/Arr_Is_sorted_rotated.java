@@ -4,7 +4,6 @@
 // Output: true
 
 //  Check if array is sorted and rotated
-package array_01;
 
 public class Arr_Is_sorted_rotated {
 
