@@ -6,6 +6,29 @@
 
 // currentMax and Maxaum
 
+// ✅ In One Line:
+// Kadane’s Algorithm finds the maximum sum of a subarray by going left to right, and starting fresh whenever the sum becomes worse than the current number.
+
+// 🛠️ When to Use:
+// Arrays with both +ve and -ve numbers
+
+// Need to find max sum of subarray
+
+// DSA interviews, CP, optimization problems
+
+// ✅ Real-World Analogy:
+// Imagine you're walking on a path (array):
+
+// Every step gives you coins (positive) or makes you lose them (negative)
+
+// You want to collect the maximum coins in a row (subarray)
+
+// If you're losing too much, just restart from a new place
+
+// At the end, check when you got the maximum coins
+
+// That’s Kadane! 😄🎒
+
 public class KadaneWithSubarray {
     public static void main(String[] args) {
         int arr[] ={-2,1,-3,4,-1,2,1,-5,4};
