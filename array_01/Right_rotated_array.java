@@ -13,7 +13,7 @@ public class Right_rotated_array {
 
         //  store in temp array : 
         for(int i=0;i<k;i++){
-            temp[i] = arr[arr.length-1-i];
+            temp[i] = arr[arr.length-k+i];
         }
     
         //  shifting array elements : 
@@ -21,10 +21,12 @@ public class Right_rotated_array {
             arr[i] = arr[i-k];
         }
 
-        // storing temp array to arr :
+        // storing temp array to arr :  temp [5,4]
         for(int i=0;i<k;i++){
             arr[i] = temp[i];
         }
+
+        
         System.out.println();
         for (int ele : arr) {
             System.out.print(ele+" ");
