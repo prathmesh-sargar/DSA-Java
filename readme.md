@@ -638,6 +638,78 @@ while (j < arr.length) {
 
 
 
+---
+
+### ✅ Question: Two Sum – Find indices of two numbers such that their sum equals the target.
+
+🧠 **Input:**
+`arr = [2, 4, 7, 6, 8]`, `target = 13`
+
+🎯 **Output:**
+`[2, 3]` → because `7 + 6 = 13`
+
+---
+
+### 💡 Approach:
+
+**Core Idea:**
+We use a **HashMap** to keep track of the **elements we've already seen** and their **indices**.
+
+---
+
+### 🔁 Step-by-Step Logic:
+
+1. **Start from index `i = 0` to end of array.**
+2. For each element `arr[i]`, calculate its **complement** = `target - arr[i]`.
+3. Check if the complement is already in the map:
+
+   * ✅ If found → That means **arr\[i] + complement = target**, so return both indices.
+   * ❌ If not → Store the current element in the map with its index: `map.put(arr[i], i)`.
+4. If no such pair found by the end, return `[-1, -1]`.
+
+---
+
+### 🧪 Dry Run Example:
+
+With: `arr = [2, 4, 7, 6, 8]`, `target = 13`
+
+| i | arr\[i] | complement = 13 - arr\[i] | map                      | Found?           |
+| - | ------- | ------------------------- | ------------------------ | ---------------- |
+| 0 | 2       | 11                        | {2: 0}                   | ❌                |
+| 1 | 4       | 9                         | {2: 0, 4: 1}             | ❌                |
+| 2 | 7       | 6                         | {2: 0, 4: 1, 7: 2}       | ❌                |
+| 3 | 6       | 7                         | ✅ 7 is in map at index 2 | ✅ return \[2, 3] |
+
+So, output: `[2, 3]`
+
+---
+
+### ✅ Corrected Output for Your Code:
+
+```java
+arr = {2, 4, 7, 6, 8}, target = 13
+Output: [2, 3] → because 7 + 6 = 13
+```
+
+---
+
+### 🔁 Sample Code Logic (minimal):
+
+```java
+HashMap<Integer, Integer> map = new HashMap<>();
+
+for (int i = 0; i < arr.length; i++) {
+    int complement = target - arr[i];
+
+    if (map.containsKey(complement)) {
+        return new int[]{map.get(complement), i};
+    }
+
+    map.put(arr[i], i);
+}
+```
+
+---
 
 
 
