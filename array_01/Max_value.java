@@ -6,8 +6,8 @@ public class Max_value {
         // Output: 8
 
         int arr[] = {3,5,1,8,4};
-        int max = -1;
-        for( int i=0;i<=arr.length-1;i++){
+        int max = arr[0];
+        for( int i=1;i<=arr.length-1;i++){
             if(max < arr[i]){
                 max = arr[i];
             }
