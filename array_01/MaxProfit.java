@@ -18,3 +18,4 @@ public class MaxProfit {
         System.out.println("Max Profit is  : "+maxProfilt);
     }
 }
+

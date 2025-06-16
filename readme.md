@@ -711,7 +711,238 @@ for (int i = 0; i < arr.length; i++) {
 
 ---
 
+---
 
+### ✅ Question: Maximum Difference (Optimized)
 
+🧠 **Input:**
+`[1, 5, 2, 10]`
 
+🎯 **Output:**
+`9` → `10 - 1`
+
+---
+
+### 💡 Optimized Approach (One Pass):
+
+1. Initialize `minSoFar = arr[0]` to keep track of the **smallest element seen so far**.
+2. Initialize `maxDiff = -1` to store the **maximum difference**.
+3. Loop from index 1 to end:
+
+   * If `arr[i] > minSoFar`, calculate difference: `arr[i] - minSoFar`
+   * Update `maxDiff = max(maxDiff, diff)`
+   * If `arr[i] < minSoFar`, update `minSoFar = arr[i]`
+4. After the loop, `maxDiff` holds the result.
+
+---
+
+### ✅ Sample Code (Optimized):
+
+```java
+public class MaxDifferenceOptimized {
+    public static void main(String[] args) {
+        int[] arr = {1, 5, 2, 10};
+        int minSoFar = arr[0];
+        int maxDiff = -1;
+
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] > minSoFar) {
+                int diff = arr[i] - minSoFar;
+                maxDiff = Math.max(maxDiff, diff);
+            } else {
+                minSoFar = arr[i];
+            }
+        }
+
+        System.out.println("Maximum Difference: " + maxDiff);
+    }
+}
+```
+
+---
+
+### 🔁 Dry Run on `[1, 5, 2, 10]`
+
+| i | arr\[i] | minSoFar | arr\[i] > min? | diff | maxDiff |
+| - | ------- | -------- | -------------- | ---- | ------- |
+| 1 | 5       | 1        | ✅              | 4    | 4       |
+| 2 | 2       | 1        | ✅              | 1    | 4       |
+| 3 | 10      | 1        | ✅              | 9    | 9       |
+
+✅ Final Output: **`9`**
+
+---
+
+---
+
+### ✅ Question: Maximum Difference
+
+**Find the maximum difference between two elements such that the larger element appears after the smaller one.**
+
+🧠 **Input:**
+`[1, 5, 2, 10]`
+
+🎯 **Output:**
+`9` → `10 - 1 = 9`
+
+---
+
+### 💡 Approach:
+
+1. Use **two nested loops** to compare every pair `(i, j)` where `i < j`.
+2. Check if `arr[j] > arr[i]`, meaning the second number is larger and comes **after** the first.
+3. If valid, calculate the difference: `arr[j] - arr[i]`.
+4. Track the **maximum difference** seen so far using `maxDiff = Math.max(maxDiff, diff)`.
+
+---
+
+### 🔁 Step-by-step Dry Run:
+
+For `arr = [1, 5, 2, 10]`
+
+| i | j | arr\[i] | arr\[j] | Valid? | Diff | maxDiff |
+| - | - | ------- | ------- | ------ | ---- | ------- |
+| 0 | 1 | 1       | 5       | ✅      | 4    | 4       |
+| 0 | 2 | 1       | 2       | ✅      | 1    | 4       |
+| 0 | 3 | 1       | 10      | ✅      | 9    | 9       |
+| 1 | 2 | 5       | 2       | ❌      | -    | 9       |
+| 1 | 3 | 5       | 10      | ✅      | 5    | 9       |
+| 2 | 3 | 2       | 10      | ✅      | 8    | 9       |
+
+✅ Final **maxDiff = 9**
+
+---
+
+### 🧪 Edge Case:
+
+If the array is strictly decreasing like `[5, 4, 3]`, there is no valid pair → Output: `-1`
+
+---
+
+### 🔁 Sample Code Logic:
+
+```java
+int maxDiff = -1;
+
+for (int i = 0; i < arr.length; i++) {
+    for (int j = i + 1; j < arr.length; j++) {
+        if (arr[j] > arr[i]) {
+            int diff = arr[j] - arr[i];
+            maxDiff = Math.max(maxDiff, diff);
+        }
+    }
+}
+```
+
+---
+
+---
+
+### ✅ Question: Best Time to Buy and Sell Stock
+
+🧠 **Input:** `prices = [7, 1, 5, 3, 6, 8]`
+🎯 **Output:** `7`
+📘 **Explanation:** Buy on day 2 (price = 1), sell on day 6 (price = 8). Profit = 8 - 1 = 7
+
+---
+
+### 💡 Optimized Approach (One Pass):
+
+* Initialize `minPrice = prices[0]`
+* Initialize `maxProfit = 0`
+* Traverse the array from index 1 to n:
+
+  * If `prices[i] < minPrice`, update `minPrice`
+  * Else calculate profit: `prices[i] - minPrice`
+  * Update `maxProfit` if profit is higher
+
+---
+
+### ✅ Sample Code (Optimized):
+
+```java
+public class MaxProfit {
+    public static void main(String[] args) {
+        int[] prices = {7, 1, 5, 3, 6, 8};
+        int minPrice = prices[0];
+        int maxProfit = 0;
+
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] < minPrice) {
+                minPrice = prices[i];
+            } else {
+                int profit = prices[i] - minPrice;
+                maxProfit = Math.max(maxProfit, profit);
+            }
+        }
+
+        System.out.println("Max Profit is: " + maxProfit);
+    }
+}
+```
+
+---
+
+### 🔁 Dry Run on `[7, 1, 5, 3, 6, 8]`
+
+| i | prices\[i] | minPrice | profit | maxProfit |
+| - | ---------- | -------- | ------ | --------- |
+| 1 | 1          | 1        | -      | 0         |
+| 2 | 5          | 1        | 4      | 4         |
+| 3 | 3          | 1        | 2      | 4         |
+| 4 | 6          | 1        | 5      | 5         |
+| 5 | 8          | 1        | 7      | 7         |
+
+✅ Final Output: **`7`**
+
+---
+
+---
+
+### ✅ Question: Maximum Distance Between Houses with Different Colors
+
+🧠 **Input**: `[1, 1, 1, 6, 1, 1, 1]`
+🎯 **Output**: `3`
+🎯 **Goal**: Find the maximum distance between two houses having different colors.
+
+---
+
+### 💡 Approach:
+
+* The problem is asking for the **maximum index difference** between two elements with **different values** (colors).
+* You only need to compare:
+
+  * The first element (`colors[0]`) with all elements from the **end to start**.
+  * The last element (`colors[n - 1]`) with all elements from **start to end**.
+* This reduces the number of comparisons needed and ensures the maximum distance is captured.
+
+---
+
+### 🔁 Sample Logic:
+
+```java
+// Check from the end for a different color from the start
+for (int i = n - 1; i >= 0; i--) {
+    if (colors[0] != colors[i]) {
+        maxDist = Math.max(maxDist, i);
+        break; // early exit for max distance from start
+    }
+}
+
+// Check from the start for a different color from the end
+for (int i = 0; i < n; i++) {
+    if (colors[n - 1] != colors[i]) {
+        maxDist = Math.max(maxDist, (n - 1) - i);
+        break; // early exit for max distance from end
+    }
+}
+```
+
+---
+
+### ✅ Output:
+
+```java
+maxDist: 3
+```
 
