@@ -946,3 +946,52 @@ for (int i = 0; i < n; i++) {
 maxDist: 3
 ```
 
+
+
+---
+
+### ✅ Question: Replace Elements with Greatest Element on Right Side
+
+🧠 **Input**:
+`arr = [17, 18, 5, 4, 6, 1]`
+🎯 **Output**:
+`[18, 6, 6, 6, 1, -1]`
+
+---
+
+### 💡 Approach:
+
+* We need to **replace each element** in the array with the **greatest element on its right**.
+* The **last element** will always be `-1` since it has no elements to its right.
+* To solve this efficiently in **O(n)** time, we **traverse from the end** of the array:
+
+  * Keep track of the **maximum element seen so far** (`maxRight`)
+  * At each index:
+
+    * Store the current element in a temporary variable
+    * Replace the current index with `maxRight`
+    * Update `maxRight` as the maximum between itself and the temp value
+
+---
+
+### 🔁 Sample Logic:
+
+```java
+int maxRight = -1;
+
+for (int i = n - 1; i >= 0; i--) {
+    int temp = arr[i];
+    arr[i] = maxRight;
+    maxRight = Math.max(maxRight, temp);
+}
+```
+
+---
+
+### ✅ Output:
+
+```java
+[18, 6, 6, 6, 1, -1]
+```
+
+---
