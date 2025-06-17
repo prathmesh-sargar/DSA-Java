@@ -995,3 +995,53 @@ for (int i = n - 1; i >= 0; i--) {
 ```
 
 ---
+
+### ✅ Question: Check If Array is Special (Even-Odd Alternating)
+
+🧠 **Input**:
+`nums = [2, 1, 4]`
+🎯 **Output**:
+`true`
+
+---
+
+### 📘 Definition:
+
+An array is **special** if every pair of **adjacent elements** has **different parity**. That means:
+
+* One is **even**, the other is **odd**
+
+---
+
+### 💡 Approach:
+
+* Traverse the array starting from the second element (index `1`)
+* For each adjacent pair `(arr[i-1], arr[i])`:
+
+  * Check if **both are even** or **both are odd**
+  * If yes → Return `false` (array is not special)
+* If loop completes without returning `false` → Return `true`
+
+---
+
+### 🔁 Sample Logic:
+
+```java
+for (int i = 1; i < arr.length; i++) {
+    if (arr[i] % 2 == arr[i - 1] % 2) {
+        return false;
+    }
+}
+return true;
+```
+
+---
+
+### ✅ Output Example:
+
+```java
+Input: [2, 1, 4] → true  
+Input: [4, 3, 1, 6] → false (3 and 1 are both odd)
+```
+
+---
