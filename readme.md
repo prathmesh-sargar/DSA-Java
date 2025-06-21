@@ -1044,4 +1044,197 @@ Input: [2, 1, 4] → true
 Input: [4, 3, 1, 6] → false (3 and 1 are both odd)
 ```
 
+
+---
+
+### ✅ Question: Container With Most Water
+
+🧠 **Input:** `[1,8,6,2,5,4,8,3,7]`
+🎯 **Output:** `49`
+
+---
+
+### 💡 Approach:
+
+* Use the **two-pointer technique**: one pointer at the start (`left`), another at the end (`right`) of the array.
+* At each step:
+
+  * Calculate the **current area** using:
+
+    ```
+    area = min(height[left], height[right]) * (right - left)
+    ```
+  * Update `maxArea` if the current area is larger.
+  * Move the pointer with the **shorter line** (since it limits the area):
+
+    * If `height[left] < height[right]`, increment `left`
+    * Else, decrement `right`
+
+---
+
+### 🔁 Sample Logic Code:
+
+```java
+int left = 0;
+int right = arr.length - 1;
+int maxArea = 0;
+
+while (left < right) {
+    int height = Math.min(arr[left], arr[right]);
+    int width = right - left;
+    int area = height * width;
+
+    maxArea = Math.max(maxArea, area);
+
+    if (arr[left] < arr[right]) {
+        left++;
+    } else {
+        right--;
+    }
+}
+```
+
+---
+
+
+
+### ✅ Question: 3Sum (Find All Triplets That Sum to Zero)
+
+🧠 **Input:** `[-1, 0, 1, 2, -1, -4]`
+🎯 **Output:** `[[-1, -1, 2], [-1, 0, 1]]`
+
+---
+
+### 💡 Approach:
+
+* First, **sort the array**. Sorting helps in identifying and skipping duplicates and using the two-pointer technique effectively.
+* Iterate through the array with a loop:
+
+  * For every element `nums[i]`, use **two pointers** (`j = i + 1`, `k = n - 1`) to find two other numbers such that the sum is `0`.
+  * Skip duplicate values of `nums[i]` to avoid duplicate triplets.
+  * Inside the loop:
+
+    * If `nums[i] + nums[j] + nums[k] > 0`: move `k--` (need a smaller number).
+    * If the sum is `< 0`: move `j++` (need a bigger number).
+    * If the sum is `0`: store the triplet, and skip duplicates for `j` using `while` loop.
+
+---
+
+### 🔁 Sample Logic Code:
+
+```java
+Arrays.sort(nums);
+
+for (int i = 0; i < nums.length; i++) {
+    if (i > 0 && nums[i] == nums[i - 1]) continue;
+
+    int j = i + 1;
+    int k = nums.length - 1;
+
+    while (j < k) {
+        int total = nums[i] + nums[j] + nums[k];
+
+        if (total > 0) {
+            k--;
+        } else if (total < 0) {
+            j++;
+        } else {
+            res.add(Arrays.asList(nums[i], nums[j], nums[k]));
+            j++;
+            while (j < k && nums[j] == nums[j - 1]) j++;
+        }
+    }
+}
+```
+
+---
+
+
+
+### ✅ Question: Two Sum II – Input Array Is Sorted
+
+🧠 **Input:**
+`numbers = [2, 7, 11, 15], target = 9`
+🎯 **Output:**
+`[1, 2]`
+(Indexes are 1-based)
+
+---
+
+### 💡 Approach:
+
+* This is a **two-pointer problem** because the input array is already sorted.
+* Initialize two pointers:
+
+  * `start = 0` (beginning of array)
+  * `end = arr.length - 1` (end of array)
+* Check the sum of the elements at these two pointers:
+
+  * If `arr[start] + arr[end] == target` → found the answer
+  * If the sum is **greater** than target → move `end--` to reduce sum
+  * If the sum is **less** than target → move `start++` to increase sum
+* Return indices **+1** since the problem requires 1-based indexing.
+
+✅ This solution works in **O(n)** time and uses **constant extra space**.
+
+---
+
+### 🔁 Sample Logic Code:
+
+```java
+while (start < end) {
+    if (arr[start] + arr[end] == target) {
+        return new int[]{start + 1, end + 1};
+    }
+    if (arr[start] + arr[end] > target) {
+        end--;
+    } else {
+        start++;
+    }
+}
+```
+
+---
+
+### ✅ Question: Remove Duplicates from Sorted Array
+
+🧠 **Input:**
+`nums = [1,1,2,2]`
+🎯 **Output:**
+`2` (Unique elements placed at start → `[1, 2, _, _]`)
+
+---
+
+### 💡 Approach:
+
+* Since the array is **sorted**, duplicates will be adjacent.
+* Use the **two-pointer technique**:
+
+  * `j` tracks the **position of last unique element**.
+  * Traverse from `i = 1` to end.
+  * If `arr[i] != arr[j]`, then a new unique element is found:
+
+    * Increment `j`
+    * Copy `arr[i]` to `arr[j]`
+* Finally, the number of unique elements is `j + 1`.
+
+✅ Time Complexity: `O(n)`
+✅ Space Complexity: `O(1)`
+✅ In-place without using extra space.
+
+---
+
+### 🔁 Sample Logic Code:
+
+```java
+int j = 0;
+for (int i = 1; i < arr.length; i++) {
+    if (arr[j] != arr[i]) {
+        j++;
+        arr[j] = arr[i];
+    }
+}
+System.out.println("Unique count: " + (j + 1));
+```
+
 ---
