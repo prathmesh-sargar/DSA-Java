@@ -1238,3 +1238,102 @@ System.out.println("Unique count: " + (j + 1));
 ```
 
 ---
+
+
+
+### ✅ Question: Maximum Average Subarray of Size `k`
+
+🧠 **Input:**
+`nums = [1,12,-5,-6,50,3]`, `k = 4`
+🎯 **Output:**
+`12.75`
+👉 Maximum average subarray of size `k` is `[12, -5, -6, 50] → sum = 51 → avg = 12.75`
+
+---
+
+### 💡 Approach: Sliding Window
+
+* To avoid recalculating the sum every time, use the **Sliding Window** technique:
+
+  * First, calculate the sum of the **first `k` elements**.
+  * Then, **slide the window** one element at a time:
+
+    * Subtract the element that's leaving the window.
+    * Add the new element that’s entering the window.
+    * Track the maximum sum at each step.
+* Finally, return `max_sum / k` as the maximum average.
+
+---
+
+### ✅ Time Complexity: `O(n)`
+
+✅ Space Complexity: `O(1)`
+✅ Efficient for large arrays
+
+---
+
+### 🔁 Sample Logic Code:
+
+```java
+int sum = 0;
+for (int i = 0; i < k; i++) {
+    sum += nums[i];
+}
+double max_sum = sum;
+
+for (int i = k; i < nums.length; i++) {
+    sum = sum - nums[i - k] + nums[i];  // slide window
+    max_sum = Math.max(max_sum, sum);
+}
+System.out.println("Max Average: " + (max_sum / k));
+```
+
+---
+
+### ✅ Question: Minimum Size Subarray Sum
+
+🧠 **Input:**
+`target = 7`, `nums = [2,3,1,2,4,3]`
+🎯 **Output:**
+`2`
+👉 The subarray `[4,3]` has the minimum length with sum ≥ 7.
+
+---
+
+### 💡 Approach: Sliding Window
+
+* Use the **two-pointer sliding window** technique:
+
+  * Expand the window by moving the `end` pointer and keep adding to `sum`.
+  * When `sum >= target`, try **shrinking the window** from the left (`start` pointer) while maintaining the condition.
+  * Track the **minimum window size** during the process.
+* If no valid subarray is found, return `0`.
+
+---
+
+### ✅ Time Complexity: `O(n)`
+
+✅ Space Complexity: `O(1)`
+⚡ Efficient for large input sizes.
+
+---
+
+### 🔁 Sample Logic Code:
+
+```java
+int start = 0, sum = 0;
+int minLen = Integer.MAX_VALUE;
+
+for (int end = 0; end < nums.length; end++) {
+    sum += nums[end];
+    while (sum >= target) {
+        minLen = Math.min(minLen, end - start + 1);
+        sum -= nums[start++];
+    }
+}
+
+int result = minLen == Integer.MAX_VALUE ? 0 : minLen;
+System.out.println("Minimum subarray length: " + result);
+```
+
+---
