@@ -1337,3 +1337,101 @@ System.out.println("Minimum subarray length: " + result);
 ```
 
 ---
+
+
+### ✅ Question: Max Consecutive 1’s III (Flip at Most `k` Zeroes)
+
+🧠 **Input:**
+`nums = [1,1,1,0,0,0,1,1,1,1,0]`, `k = 2`
+🎯 **Output:**
+`6`
+🔍 Explanation: You can flip at most 2 zeroes. Flipping two 0's (at index 3 and 4), the longest subarray becomes `[1,1,1,1,1,1]`.
+
+---
+
+### 💡 Approach: Sliding Window (Two Pointers)
+
+* We maintain a window `[left...right]` that always contains at most `k` zeroes.
+* Each time we include a `0`, we decrement `k`.
+* If `k` becomes negative, we move the `left` pointer forward:
+
+  * If `nums[left] == 0`, we **restore** one flip by incrementing `k`.
+* At every step, the **window size** `right - left + 1` is the length of the current valid subarray.
+* The result will be the **maximum length** of such a window.
+
+---
+
+### ✅ Time Complexity: `O(n)`
+
+✅ Space Complexity: `O(1)`
+📈 Efficient for large arrays.
+
+---
+
+### 🔁 Sample Logic Code:
+
+```java
+int left = 0;
+for (int right = 0; right < nums.length; right++) {
+    if (nums[right] == 0) k--;
+    if (k < 0) {
+        if (nums[left] == 0) k++;
+        left++;
+    }
+}
+System.out.println("Max Consecutive ones: " + (nums.length - left));
+```
+
+---
+
+
+
+### ✅ Question: Length of Longest Substring Without Repeating Characters
+
+🧠 **Input:**
+`s = "abcabcbb"`
+🎯 **Output:**
+`3`
+🔍 **Explanation:** The longest substring without repeating characters is `"abc"` with a length of `3`.
+
+---
+
+### 💡 Approach: Sliding Window with HashSet
+
+#### 🛠️ Key Concepts:
+
+* Use a **sliding window** with two pointers: `left` and `right`.
+* A `HashSet` is used to store characters in the current window to quickly check for duplicates.
+* Move the `right` pointer through the string.
+
+  * If the character is **already in the set**, move the `left` pointer and **remove** characters from the set until there are no duplicates.
+  * Update the `max_count` with the current window size: `right - left + 1`.
+
+---
+
+### ✅ Time Complexity: `O(n)`
+
+✅ Space Complexity: `O(n)` (for the `HashSet`)
+
+---
+
+### 🔁 Sample Logic Code:
+
+```java
+int left = 0;
+int max_count = 0;
+HashSet<Character> set = new HashSet<>();
+
+for (int right = 0; right < s.length(); right++) {
+    char ch = s.charAt(right);
+    while (set.contains(ch)) {
+        set.remove(s.charAt(left));
+        left++;
+    }
+    set.add(ch);
+    max_count = Math.max(max_count, right - left + 1);
+}
+System.out.println("Length Of Longest Substring : " + max_count);
+```
+
+---
