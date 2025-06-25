@@ -1435,3 +1435,408 @@ System.out.println("Length Of Longest Substring : " + max_count);
 ```
 
 ---
+
+
+## ✅ Problem: Subarray Sum Equals K
+
+### 🧠 Input:
+
+```java
+nums = [1, 1, 1], k = 2
+```
+
+### 🎯 Output:
+
+```java
+2
+```
+
+---
+
+## 💡 Approach: Prefix Sum + HashMap (Best Optimized Approach)
+
+### ❓ Why Not Sliding Window?
+
+* Sliding Window works only for **positive integers** because it depends on increasing window sizes to find the target sum.
+* But here, since elements can be **negative**, the sum may increase or decrease unpredictably — making sliding window **invalid** in such cases.
+
+---
+
+### ✅ Brute Force Approach:
+
+* Use **two nested loops** to check the sum of all subarrays.
+* Time Complexity: **O(n²)** — inefficient for large arrays.
+
+---
+
+### ✅ Optimal Approach: Prefix Sum + HashMap
+
+#### 🔍 Key Idea:
+
+* A **prefix sum** is the sum of all elements from index `0` to index `i`.
+* We want to check if a **subarray sum = k** exists.
+  So if the **current prefix sum is `sum`**, then we look for the number of times `(sum - k)` has occurred before.
+
+#### 🔐 Formula:
+
+```java
+if prefixSum[j] - prefixSum[i-1] == k
+=> prefixSum[i-1] = prefixSum[j] - k
+```
+
+#### 🧱 Steps:
+
+1. Initialize:
+
+   * A `HashMap<Integer, Integer>` to store **prefix sums** and their frequency.
+   * Add `prefixSum.put(0, 1)` to handle the case where subarray starts from index 0.
+
+2. Iterate through the array:
+
+   * Add the current element to the running sum.
+   * If `(sum - k)` exists in map, add its frequency to the count.
+   * Update the map with current sum and its frequency.
+
+#### 🔁 Example Walkthrough:
+
+For `nums = [1, 1, 1]` and `k = 2`
+
+* Running prefix sums: `[1, 2, 3]`
+* Count is incremented when we find `sum - k` in the map:
+
+  * At index 1: `sum = 2`, `sum - k = 0` → found → `count = 1`
+  * At index 2: `sum = 3`, `sum - k = 1` → found → `count = 2`
+
+---
+
+### 🧪 Sample Code:
+
+```java
+int count = 0, sum = 0;
+HashMap<Integer, Integer> prefixsum = new HashMap<>();
+prefixsum.put(0, 1);  // important initialization
+
+for (int num : nums) {
+    sum += num;
+
+    if (prefixsum.containsKey(sum - k)) {
+        count += prefixsum.get(sum - k);
+    }
+
+    prefixsum.put(sum, prefixsum.getOrDefault(sum, 0) + 1);
+}
+```
+
+---
+
+### 📈 Time & Space Complexity:
+
+| Type             | Value |
+| ---------------- | ----- |
+| Time Complexity  | O(n)  |
+| Space Complexity | O(n)  |
+
+---
+
+### ✅ Summary:
+
+* Use Prefix Sum with HashMap when the array can contain **negative** numbers.
+* This pattern is very useful in many **subarray problems** like:
+
+  * Subarray Sum Equals K
+  * Count subarrays with XOR = K
+  * Count subarrays with sum divisible by K, etc.
+
+---
+
+
+
+## ✅ Problem: Range Sum Query – Immutable
+
+### 🧠 Input:
+
+```java
+nums = [-2, 0, 3, -5, 2, -1]
+Query 1: sumRange(0, 2) => Output: 1
+Query 2: sumRange(2, 5) => Output: -1
+Query 3: sumRange(0, 5) => Output: -3
+```
+
+---
+
+### 🎯 Goal:
+
+Efficiently answer multiple queries asking for the **sum of elements from index `left` to `right` (inclusive)**.
+
+---
+
+## 💡 Approach: Prefix Sum (Preprocessing Technique)
+
+### 🚀 Key Idea:
+
+Instead of recalculating the sum again and again, **precompute a prefix sum array** so that each query is answered in **O(1) time**.
+
+---
+
+### 🧱 Steps:
+
+1. **Preprocess**:
+
+   * Create a `prefix[]` array where:
+
+     ```
+     prefix[i] = nums[0] + nums[1] + ... + nums[i]
+     ```
+
+2. **Answer Queries**:
+
+   * If `left == 0`, return `prefix[right]`
+   * Else, return `prefix[right] - prefix[left - 1]`
+
+---
+
+### 🔁 Example:
+
+```java
+nums = [-2, 0, 3, -5, 2, -1]
+prefix = [-2, -2, 1, -4, -2, -3]
+
+// sumRange(0, 2) => prefix[2] = 1
+// sumRange(2, 5) => prefix[5] - prefix[1] = -3 - (-2) = -1
+// sumRange(0, 5) => prefix[5] = -3
+```
+
+---
+
+### 🧪 Sample Code:
+
+```java
+int[] prefix;
+
+public static int RangeSum(int left, int right) {
+    if (left == 0) return prefix[right];
+    return prefix[right] - prefix[left - 1];
+}
+```
+
+```java
+// Inside main:
+prefix = new int[n];
+prefix[0] = nums[0];
+for (int i = 1; i < n; i++) {
+    prefix[i] = prefix[i - 1] + nums[i];
+}
+```
+
+---
+
+### 📈 Time & Space Complexity:
+
+| Operation        | Time | Space |
+| ---------------- | ---- | ----- |
+| Preprocessing    | O(n) | O(n)  |
+| Query sumRange() | O(1) | —     |
+
+---
+
+### ✅ Summary:
+
+* Prefix Sum is powerful for range-based problems with multiple queries.
+* Converts repeated O(n) operations to O(1) after O(n) preprocessing.
+* Use this when the array is **immutable** and **queries are frequent**.
+
+---
+
+
+## ✅ Problem: Maximum Product Subarray
+
+### 🧠 Input:
+
+```java
+nums = [2,3,-2,4]
+```
+
+### 🎯 Output:
+
+```java
+6
+```
+
+> The subarray `[2,3]` gives the maximum product of `6`.
+
+---
+
+## 💡 Approach: Dynamic Programming with Two Variables
+
+### 🧠 Key Insight:
+
+Unlike sum problems, **product problems need to track both max and min**, because a **negative × negative = positive** — which might give a larger product than the max-so-far.
+
+---
+
+### 🔥 Core Idea:
+
+We maintain two variables at each step:
+
+* `currMax`: The **maximum product ending at current index**
+* `currMin`: The **minimum product ending at current index**
+
+This helps handle negative numbers effectively.
+
+---
+
+### 🧱 Steps:
+
+1. Initialize:
+
+   * `res = max number in array` (handles single element cases like all negatives)
+   * `currMax = 1`, `currMin = 1`
+
+2. Loop through array:
+
+   * Temporarily store `currMax * num` in a variable `temp`
+   * Update `currMax` as:
+
+     ```java
+     max(currMax * num, currMin * num, num)
+     ```
+   * Update `currMin` similarly:
+
+     ```java
+     min(temp, currMin * num, num)
+     ```
+   * Update result:
+
+     ```java
+     res = max(res, currMax)
+     ```
+
+---
+
+### 🔁 Sample Code Snippet:
+
+```java
+int res = Integer.MIN_VALUE;
+for (int i : nums) res = Math.max(i, res);
+
+int currMax = 1, currMin = 1;
+
+for (int num : nums) {
+    int temp = currMax * num;
+    currMax = Math.max(temp, Math.max(currMin * num, num));
+    currMin = Math.min(temp, Math.min(currMin * num, num));
+    res = Math.max(res, currMax);
+}
+```
+
+---
+
+### 📈 Time & Space Complexity:
+
+| Operation          | Time | Space |
+| ------------------ | ---- | ----- |
+| Loop through array | O(n) | O(1)  |
+
+---
+
+### ✅ Summary:
+
+* Product subarray is **not straightforward** like sum.
+* You must track **min & max at each step**.
+* Handles negative numbers and zero cases effectively.
+* Common trick in interview questions!
+
+---
+
+## ✅ Problem: Best Time to Buy and Sell Stock
+
+### 🧠 Input:
+
+```java
+prices = [7,1,5,3,6]
+```
+
+### 🎯 Output:
+
+```java
+5
+```
+
+> Buy at price `1` (day 2), sell at price `6` (day 5), profit = `6 - 1 = 5`
+
+---
+
+## 💡 Approach: Track Minimum Buy Price & Max Profit
+
+### 🔥 Core Idea:
+
+* We want to **buy at the lowest price before we sell**.
+* At every day `i`, we check:
+
+  1. Can we **update our buy price** if we found a cheaper price?
+  2. If not, check what profit we would make if we **sold at today's price**.
+  3. **Update max profit** if that profit is greater than previous ones.
+
+---
+
+### 🧱 Steps:
+
+1. Initialize:
+
+   * `buy_price = prices[0]`
+   * `max_profit = 0`
+
+2. Traverse from index 1 to end:
+
+   * If `prices[i] < buy_price` → update `buy_price`
+   * Else, calculate `profit = prices[i] - buy_price` and update `max_profit`
+
+---
+
+### 🔁 Sample Code Snippet:
+
+```java
+int maxProfit = 0;
+int buy_price = prices[0];
+
+for (int i = 1; i < prices.length; i++) {
+    if (buy_price > prices[i]) {
+        buy_price = prices[i];
+    }
+    maxProfit = Math.max(maxProfit, prices[i] - buy_price);
+}
+```
+
+---
+
+### ✅ Example Dry Run:
+
+Input:
+
+```java
+prices = [7, 1, 5, 3, 6]
+```
+
+* Day 1: buy = 7
+* Day 2: price = 1 → new buy = 1
+* Day 3: price = 5 → profit = 4 → maxProfit = 4
+* Day 4: price = 3 → profit = 2 → maxProfit = 4
+* Day 5: price = 6 → profit = 5 → maxProfit = 5 ✅
+
+---
+
+### 📈 Time & Space Complexity:
+
+| Operation   | Time | Space |
+| ----------- | ---- | ----- |
+| Single loop | O(n) | O(1)  |
+
+---
+
+### ✅ Summary:
+
+* Efficient one-pass solution ✅
+* Only track **lowest price so far** and **max profit**
+* No need for nested loops
+
+---
