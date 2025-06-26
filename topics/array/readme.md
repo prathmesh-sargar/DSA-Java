@@ -143,3 +143,107 @@ A few questions that involve **combinations of above patterns** or logical trick
 * 📌 **Tag your GitHub code** with pattern name inside folders for easy tracking.
 
 ---
+
+## ✅ Problem: Find Pivot Index
+
+### 🧠 Input:
+
+```java
+nums = [1, 7, 3, 6, 5, 6]
+```
+
+### 🎯 Output:
+
+```java
+3
+```
+
+> At index 3, the sum of elements to the left (`1+7+3 = 11`) is equal to the sum of elements to the right (`5+6 = 11`).
+
+---
+
+## 💡 Approach: Use Left Sum & Right Sum Logic
+
+### 🔥 Core Idea:
+
+* You want to find an index `i` where:
+
+  ```
+  leftSum == rightSum
+  ```
+* Instead of calculating the sum on both sides for every index (which takes O(n²)), we use:
+
+  ```
+  rightSum = totalSum - leftSum - nums[i]
+  ```
+* This allows us to **solve it in one pass** after computing total sum.
+
+---
+
+### 🧱 Steps:
+
+1. Calculate total sum of the array.
+2. Initialize `leftSum = 0`.
+3. Loop over the array:
+
+   * At index `i`, calculate `rightSum = totalSum - leftSum - nums[i]`.
+   * If `leftSum == rightSum`, return index `i` (pivot index).
+   * Else, add `nums[i]` to `leftSum` and continue.
+4. If no pivot is found, return `-1`.
+
+---
+
+### 🔁 Sample Code Snippet:
+
+```java
+public static int pivotIndex(int[] nums) {
+    int totalSum = 0;
+    for (int num : nums) {
+        totalSum += num;
+    }
+
+    int leftSum = 0;
+    for (int i = 0; i < nums.length; i++) {
+        int rightSum = totalSum - leftSum - nums[i];
+        if (leftSum == rightSum) {
+            return i;
+        }
+        leftSum += nums[i];
+    }
+
+    return -1;
+}
+```
+
+---
+
+### ✅ Dry Run:
+
+```java
+nums = [1, 7, 3, 6, 5, 6]
+totalSum = 28
+
+i = 0 → left = 0, right = 27 → ❌  
+i = 1 → left = 1, right = 20 → ❌  
+i = 2 → left = 8, right = 17 → ❌  
+i = 3 → left = 11, right = 11 → ✅ return 3
+```
+
+---
+
+### 📈 Time & Space Complexity:
+
+| Operation              | Complexity |
+| ---------------------- | ---------- |
+| Time                   | O(n)       |
+| Space (no extra array) | O(1)       |
+
+---
+
+### ✅ Summary:
+
+* Use prefix logic without building extra arrays.
+* Efficient one-pass check with `leftSum` & `rightSum`.
+* Returns the **leftmost** pivot index.
+
+---

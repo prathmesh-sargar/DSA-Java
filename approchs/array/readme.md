@@ -1840,3 +1840,212 @@ prices = [7, 1, 5, 3, 6]
 * No need for nested loops
 
 ---
+
+
+## ✅ Problem: Find Pivot Index
+
+### 🧠 Input:
+
+```java
+nums = [1, 7, 3, 6, 5, 6]
+```
+
+### 🎯 Output:
+
+```java
+3
+```
+
+> At index 3, the sum of elements to the left (`1+7+3 = 11`) is equal to the sum of elements to the right (`5+6 = 11`).
+
+---
+
+## 💡 Approach: Use Left Sum & Right Sum Logic
+
+### 🔥 Core Idea:
+
+* You want to find an index `i` where:
+
+  ```
+  leftSum == rightSum
+  ```
+* Instead of calculating the sum on both sides for every index (which takes O(n²)), we use:
+
+  ```
+  rightSum = totalSum - leftSum - nums[i]
+  ```
+* This allows us to **solve it in one pass** after computing total sum.
+
+---
+
+### 🧱 Steps:
+
+1. Calculate total sum of the array.
+2. Initialize `leftSum = 0`.
+3. Loop over the array:
+
+   * At index `i`, calculate `rightSum = totalSum - leftSum - nums[i]`.
+   * If `leftSum == rightSum`, return index `i` (pivot index).
+   * Else, add `nums[i]` to `leftSum` and continue.
+4. If no pivot is found, return `-1`.
+
+---
+
+### 🔁 Sample Code Snippet:
+
+```java
+public static int pivotIndex(int[] nums) {
+    int totalSum = 0;
+    for (int num : nums) {
+        totalSum += num;
+    }
+
+    int leftSum = 0;
+    for (int i = 0; i < nums.length; i++) {
+        int rightSum = totalSum - leftSum - nums[i];
+        if (leftSum == rightSum) {
+            return i;
+        }
+        leftSum += nums[i];
+    }
+
+    return -1;
+}
+```
+
+---
+
+### ✅ Dry Run:
+
+```java
+nums = [1, 7, 3, 6, 5, 6]
+totalSum = 28
+
+i = 0 → left = 0, right = 27 → ❌  
+i = 1 → left = 1, right = 20 → ❌  
+i = 2 → left = 8, right = 17 → ❌  
+i = 3 → left = 11, right = 11 → ✅ return 3
+```
+
+---
+
+### 📈 Time & Space Complexity:
+
+| Operation              | Complexity |
+| ---------------------- | ---------- |
+| Time                   | O(n)       |
+| Space (no extra array) | O(1)       |
+
+---
+
+### ✅ Summary:
+
+* Use prefix logic without building extra arrays.
+* Efficient one-pass check with `leftSum` & `rightSum`.
+* Returns the **leftmost** pivot index.
+
+---
+
+
+
+---
+
+## ✅ Problem: Minimum Value to Get Positive Step-by-Step Sum
+
+### 🧾 Problem Statement
+
+You are given an array `nums` of integers.
+You need to choose a **starting value** `startValue`, and then traverse the array while keeping a **running total** (`prefix sum`).
+If at any point this total falls **below 1**, the `startValue` was too small.
+
+> Return the **minimum positive value** of `startValue` such that the running total is **never less than 1**.
+
+---
+
+### 🧠 Intuition
+
+The running total at any point must always be ≥ 1.
+So we simulate the running sum and track the **lowest point** it reaches.
+
+If the **minimum prefix sum** during the traversal is negative, then we must offset that by increasing our `startValue`.
+
+---
+
+### ✅ Key Observation
+
+Let `minPrefixSum` = minimum value the running sum reaches.
+Then the answer is:
+
+```java
+startValue = 1 - minPrefixSum
+```
+
+Why?
+Because we want the **lowest running sum to be at least 1**, and this formula ensures that.
+
+---
+
+### 🧮 Dry Run
+
+**Input:** `[-3, 2, -3, 4, 2]`
+**Running Sum:**
+
+```
+0 → -3 → -1 → -4 → 0 → 2
+minPrefixSum = -4
+startValue = 1 - (-4) = 5 ✅
+```
+
+---
+
+### 🧑‍💻 Code (Java - Greedy Approach)
+
+```java
+public class MinPrefixSum {
+    public static int minStartvalue(int[] nums) {
+        int sum = 0;
+        int minPrefixSum = 0;
+
+        for (int num : nums) {
+            sum += num;
+            minPrefixSum = Math.min(minPrefixSum, sum);
+        }
+
+        return 1 - minPrefixSum;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {-3, 2, -3, 4, 2};
+        System.out.println("Minimum start value is: " + minStartvalue(nums));
+    }
+}
+```
+
+---
+
+### 📈 Time and Space Complexity
+
+| Metric           | Value    |
+| ---------------- | -------- |
+| Time Complexity  | **O(n)** |
+| Space Complexity | **O(1)** |
+
+---
+
+### 🟨 Alternate Approaches
+
+1. **Brute Force** – Try increasing `startValue` until it works ✅
+   ⛔ Inefficient: O(n²) in worst case
+
+2. **Binary Search** – As discussed before
+   ✅ Time: O(n log maxValue), Good for large input constraints
+
+---
+
+### 📌 Summary
+
+* Track the minimum prefix sum while traversing the array
+* Final answer is `1 - minPrefixSum`
+* Very common **prefix sum** based greedy question
+
+---
