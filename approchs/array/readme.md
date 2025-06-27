@@ -2049,3 +2049,380 @@ public class MinPrefixSum {
 * Very common **prefix sum** based greedy question
 
 ---
+## ✅ Problem: Find Pivot Index
+
+### 🧠 Input:
+
+```java
+nums = [1, 7, 3, 6, 5, 6]
+```
+
+### 🎯 Output:
+
+```java
+3
+```
+
+> At index 3, the sum of elements to the left (`1+7+3 = 11`) is equal to the sum of elements to the right (`5+6 = 11`).
+
+---
+
+## 💡 Approach: Use Left Sum & Right Sum Logic
+
+### 🔥 Core Idea:
+
+* You want to find an index `i` where:
+
+  ```
+  leftSum == rightSum
+  ```
+* Instead of calculating the sum on both sides for every index (which takes O(n²)), we use:
+
+  ```
+  rightSum = totalSum - leftSum - nums[i]
+  ```
+* This allows us to **solve it in one pass** after computing total sum.
+
+---
+
+### 🧱 Steps:
+
+1. Calculate total sum of the array.
+2. Initialize `leftSum = 0`.
+3. Loop over the array:
+
+   * At index `i`, calculate `rightSum = totalSum - leftSum - nums[i]`.
+   * If `leftSum == rightSum`, return index `i` (pivot index).
+   * Else, add `nums[i]` to `leftSum` and continue.
+4. If no pivot is found, return `-1`.
+
+---
+
+### 🔁 Sample Code Snippet:
+
+```java
+public static int pivotIndex(int[] nums) {
+    int totalSum = 0;
+    for (int num : nums) {
+        totalSum += num;
+    }
+
+    int leftSum = 0;
+    for (int i = 0; i < nums.length; i++) {
+        int rightSum = totalSum - leftSum - nums[i];
+        if (leftSum == rightSum) {
+            return i;
+        }
+        leftSum += nums[i];
+    }
+
+    return -1;
+}
+```
+
+---
+
+### ✅ Dry Run:
+
+```java
+nums = [1, 7, 3, 6, 5, 6]
+totalSum = 28
+
+i = 0 → left = 0, right = 27 → ❌  
+i = 1 → left = 1, right = 20 → ❌  
+i = 2 → left = 8, right = 17 → ❌  
+i = 3 → left = 11, right = 11 → ✅ return 3
+```
+
+---
+
+### 📈 Time & Space Complexity:
+
+| Operation              | Complexity |
+| ---------------------- | ---------- |
+| Time                   | O(n)       |
+| Space (no extra array) | O(1)       |
+
+---
+
+### ✅ Summary:
+
+* Use prefix logic without building extra arrays.
+* Efficient one-pass check with `leftSum` & `rightSum`.
+* Returns the **leftmost** pivot index.
+
+---
+
+
+### ✅ Question: Merge Overlapping Intervals
+
+> Given `intervals = [[1,3],[2,6],[8,10],[15,18]]`, return the non-overlapping intervals that cover all input intervals.
+
+🧠 **Input:** `[[1,3],[2,6],[8,10],[15,18]]`
+🎯 **Output:** `[[1,6],[8,10],[15,18]]`
+
+---
+
+### 💡 Approach
+
+1. **Sort** all intervals by their start time.
+2. Keep a running interval `prev` (initially the first interval).
+3. For every next interval `curr`
+
+   * **If** `curr.start ≤ prev.end` → they overlap → merge by
+     `prev.end = max(prev.end, curr.end)`
+   * **Else** → add `prev` to answer list and set `prev = curr`.
+4. After the loop, add the last `prev` to the list.
+
+---
+
+#### 🔁 Sample Logic Code (Java – core only)
+
+```java
+// intervals is already sorted by start
+List<int[]> merged = new ArrayList<>();
+int[] prev = intervals[0];
+
+for (int i = 1; i < intervals.length; i++) {
+    int[] curr = intervals[i];
+
+    if (curr[0] <= prev[1]) {                // overlap
+        prev[1] = Math.max(prev[1], curr[1]); // merge
+    } else {                                 // no overlap
+        merged.add(prev);
+        prev = curr;
+    }
+}
+merged.add(prev);                             // last interval
+```
+
+Time `O(n log n)` (sorting)   Space `O(n)` (output list)
+
+---
+
+## 📚 Related Interview Classics
+
+| Problem             | Goal                                                                  | Typical Hint                                                                       |
+| ------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Meeting Room I**  | Given meeting intervals, **can a single person attend all meetings?** | Sort by start time; check if any `curr.start < prev.end`.                          |
+| **Meeting Room II** | **Minimum number of meeting rooms** required for all intervals        | Sort start & end times separately, or use a min-heap of end times; count overlaps. |
+
+*Meeting Room I* is essentially **overlap detection** (true/false).
+*Meeting Room II* asks for the **maximum number of simultaneous intervals**, i.e., the peak room count – conceptually similar to tracking overlaps but counting them instead of merging.
+
+
+
+Here's the README-style **approach** explanation for the **Insert Interval** problem:
+
+---
+---
+
+
+
+## ✅ Problem: Insert Interval and Merge Overlapping
+
+You are given:
+
+* A list of non-overlapping, **sorted** intervals.
+* A **new interval** to insert.
+
+📌 **Goal:** Insert the new interval in the correct place and **merge** any overlapping intervals.
+
+---
+
+## ✅ Example
+
+```java
+intervals = [[1,3],[6,9]]
+newInterval = [2,5]
+```
+
+🔄 After inserting and merging:
+
+```java
+Output: [[1,5],[6,9]]
+```
+
+Why?
+
+* \[2,5] overlaps with \[1,3] → merge to \[1,5]
+
+---
+
+## 💡 Approach
+
+1. **Add `newInterval`** to the interval list.
+2. **Sort** all intervals by the start time.
+3. Use **Merge Intervals** logic to remove overlaps:
+
+   * If `curr.start <= prev.end`, merge by updating `prev.end`.
+   * Else, add `prev` to result and update `prev = curr`.
+4. Add the last `prev` interval.
+
+---
+
+## 🧠 Core Logic (Java Snippet)
+
+```java
+List<int[]> merged = new ArrayList<>();
+int[] prev = allIntervals.get(0);
+
+for (int i = 1; i < allIntervals.size(); i++) {
+    int[] curr = allIntervals.get(i);
+    if (curr[0] <= prev[1]) {
+        prev[1] = Math.max(prev[1], curr[1]);
+    } else {
+        merged.add(prev);
+        prev = curr;
+    }
+}
+merged.add(prev);  // add the final interval
+```
+
+---
+
+## 🕰️ Time & Space Complexity
+
+| Step       | Time       | Space |
+| ---------- | ---------- | ----- |
+| Add & sort | O(n log n) | O(n)  |
+| Merge      | O(n)       | O(n)  |
+
+---
+
+
+Here’s the **README-style approach** for the **Sort Colors** problem:
+
+---
+---
+
+
+## ✅ Problem: Sort Colors (Dutch National Flag Algorithm)
+
+You're given an array `nums` containing only 0s, 1s, and 2s representing colors:
+
+* `0` → Red
+* `1` → White
+* `2` → Blue
+
+🔧 **Task:** Sort the array in-place **without** using the built-in sort function.
+
+---
+
+## ✅ Example
+
+```java
+Input:  nums = [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+```
+
+---
+
+## 🔍 Constraints
+
+* Must be **in-place**.
+* Must **not** use sorting libraries.
+* Must be **O(n)** time and **O(1)** space ideally.
+
+---
+
+## 💡 Approach 1: Frequency Count using HashMap (📦 Extra Space)
+
+### 🔧 Logic:
+
+1. Count how many 0s, 1s, and 2s.
+2. Refill the original array using the frequencies.
+
+```java
+HashMap<Integer, Integer> count = new HashMap<>();
+count.put(0, 0);
+count.put(1, 0);
+count.put(2, 0);
+
+for (int num : nums) count.put(num, count.get(num) + 1);
+
+int idx = 0;
+for (int color = 0; color < 3; color++) {
+    int freq = count.get(color);
+    for (int i = 0; i < freq; i++) {
+        nums[idx++] = color;
+    }
+}
+```
+
+### ✅ Time: O(n)
+
+### ❌ Space: O(1) (technically O(3), still uses a HashMap)
+
+---
+
+## 💡 Approach 2: Dutch National Flag Algorithm (⚡ Optimal)
+
+### 🔧 Logic:
+
+Use 3 pointers:
+
+* `red` for placing 0s (left)
+* `white` for scanning
+* `blue` for placing 2s (right)
+
+### 🔄 Steps:
+
+* If `nums[white] == 0` → swap with `nums[red]`, `red++`, `white++`
+* If `nums[white] == 1` → `white++`
+* If `nums[white] == 2` → swap with `nums[blue]`, `blue--` (don’t move white)
+
+```java
+int red = 0, white = 0, blue = nums.length - 1;
+
+while (white <= blue) {
+    if (nums[white] == 0) {
+        swap(nums, white, red);
+        red++;
+        white++;
+    } else if (nums[white] == 1) {
+        white++;
+    } else {
+        swap(nums, white, blue);
+        blue--;
+    }
+}
+```
+
+> Where `swap` just swaps two array elements.
+
+### ✅ Time: O(n)
+
+### ✅ Space: O(1)
+
+---
+
+## 🧠 Why Is This Called “Dutch National Flag”?
+
+* Because it sorts the array into **three parts** like the Dutch flag colors: red, white, blue in one pass.
+
+---
+
+## 🧪 Dry Run
+
+```java
+Input: [2,0,2,1,1,0]
+
+Start → red=0, white=0, blue=5
+Step 1 → swap 2 and 0 → [0,0,2,1,1,2]
+Step 2 → white=1 → swap 0 and 0
+Step 3 → white=2 → skip (2) → swap with blue → blue--
+...
+End Result: [0,0,1,1,2,2]
+```
+
+---
+
+## ✅ Final Notes
+
+* ✅ Prefer **Dutch Flag Algorithm** → Efficient and in-place.
+* 🚫 Avoid frequency count if asked for optimal space.
+* ⚙ Great question to test **in-place partitioning** logic.
+
+---
+
