@@ -2426,3 +2426,159 @@ End Result: [0,0,1,1,2,2]
 
 ---
 
+
+
+## ✅ Problem: Contains Duplicate II
+
+Given an integer array `nums` and an integer `k`, check if there exist **two indices `i` and `j`** such that:
+
+* `nums[i] == nums[j]`
+* `abs(i - j) <= k`
+
+---
+
+### ✅ Example
+
+```java
+Input: nums = [1,2,3,1], k = 3
+Output: true  // nums[0] == nums[3] and |3 - 0| = 3 ≤ k
+
+Input: nums = [1,2,3,1,2,3], k = 2
+Output: false  // No such pair within distance 2
+```
+
+---
+
+## 💡 Approach: HashMap 🧠
+
+### 🔹 Idea:
+
+Track the **last index** where each value was seen using a HashMap.
+If we see the same value again and the **index difference** is ≤ `k`, return `true`.
+
+---
+
+### 🔧 Code Logic Snippet:
+
+```java
+HashMap<Integer, Integer> seen = new HashMap<>();
+
+for (int i = 0; i < nums.length; i++) {
+    if (seen.containsKey(nums[i]) && i - seen.get(nums[i]) <= k) {
+        return true;
+    }
+    seen.put(nums[i], i);
+}
+return false;
+```
+
+---
+
+### 🕒 Time Complexity:
+
+**O(n)** – Loop through the array once.
+
+### 🧠 Space Complexity:
+
+**O(n)** – Store values and their indices in HashMap.
+
+---
+
+
+
+## ✅ Problem: Intersection of Two Arrays
+
+Given two integer arrays `nums1` and `nums2`, return an array of their **intersection**.
+Each element in the result must be **unique**, and the result **can be returned in any order**.
+
+---
+
+### ✅ Examples:
+
+```java
+Input: nums1 = [1,2,2,1], nums2 = [2,2]
+Output: [2]
+
+Input: nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+Output: [9,4] or [4,9]
+```
+
+---
+
+## 💡 Approach 1: Brute Force with Set (Nested Loops)
+
+### 🔹 Idea:
+
+* For each element in the smaller array, iterate through the larger one to find a match.
+* Store matches in a HashSet to ensure uniqueness.
+
+### 🔧 Code Logic Snippet:
+
+```java
+for (int i = 0; i < nums1.length; i++) {
+    for (int j = 0; j < nums2.length; j++) {
+        if (nums1[i] == nums2[j]) {
+            set.add(nums1[i]); // or nums2[j]
+            break;
+        }
+    }
+}
+```
+
+### 🕒 Time Complexity:
+
+**O(n \* m)** where n = length of `nums1` and m = length of `nums2`
+
+### 🧠 Space Complexity:
+
+**O(min(n, m))** – To store the result set
+
+---
+
+## 💡 Approach 2: Optimized Using HashSet ✅
+
+### 🔹 Idea:
+
+* Store all elements of `nums1` in a HashSet.
+* Traverse `nums2`, and if any element exists in the set, add it to a result set.
+* This ensures O(1) lookups and avoids duplicates.
+
+### 🔧 Code Logic Snippet:
+
+```java
+Set<Integer> set = new HashSet<>();
+for (int num : nums1) {
+    set.add(num);
+}
+
+Set<Integer> resultSet = new HashSet<>();
+for (int num : nums2) {
+    if (set.contains(num)) {
+        resultSet.add(num); // add only unique intersection elements
+    }
+}
+```
+
+---
+
+## 🔁 Conversion to Result Array:
+
+```java
+int[] result = new int[resultSet.size()];
+int idx = 0;
+for (int num : resultSet) {
+    result[idx++] = num;
+}
+```
+
+---
+
+### 🕒 Time Complexity:
+
+* **O(n + m)** — One pass through both arrays
+
+### 🧠 Space Complexity:
+
+* **O(n)** — For HashSet and result array
+
+---
