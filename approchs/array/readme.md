@@ -2582,3 +2582,70 @@ for (int num : resultSet) {
 * **O(n)** — For HashSet and result array
 
 ---
+
+Here is a concise **README-style approach** for the problem **"Longest Consecutive Sequence"**:
+
+---
+
+## ✅ Problem: Longest Consecutive Sequence
+
+Given an **unsorted array** of integers `nums`, return the length of the **longest consecutive elements sequence**.
+
+* Your algorithm must run in **O(n)** time.
+
+---
+
+### Example
+
+```java
+Input: nums = [100, 4, 200, 1, 3, 2]
+Output: 4  // The longest consecutive sequence is [1, 2, 3, 4]
+```
+
+---
+
+## 💡 Approach: Using HashSet for O(n) Time
+
+### 🔹 Idea:
+
+* Store all elements in a `HashSet` to allow O(1) lookups.
+* For each number `num`, check if it's the **start of a sequence** by checking if `(num - 1)` is **not in the set**.
+* If it’s a sequence start, count how long the sequence goes (i.e., check `num + 1`, `num + 2`, ...).
+* Keep updating `maxLength` as you find longer sequences.
+
+---
+
+### 🔧 Code Logic Snippet:
+
+```java
+HashSet<Integer> set = new HashSet<>();
+for (int num : nums) {
+    set.add(num);
+}
+
+int maxLen = 0;
+for (int num : set) {
+    if (!set.contains(num - 1)) {  // Only start from beginning of sequence
+        int current = num;
+        int length = 1;
+
+        while (set.contains(current + 1)) {
+            current++;
+            length++;
+        }
+
+        maxLen = Math.max(maxLen, length);
+    }
+}
+```
+---
+
+## ⏱ Time Complexity:
+
+* **O(n)** – Each element is processed once.
+
+## 🧠 Space Complexity:
+
+* **O(n)** – HashSet for storing all elements.
+
+---
