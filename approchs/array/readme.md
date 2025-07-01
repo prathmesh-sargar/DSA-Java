@@ -2649,3 +2649,297 @@ for (int num : set) {
 * **O(n)** – HashSet for storing all elements.
 
 ---
+
+
+
+## 📌 Problem: Find Minimum in Rotated Sorted Array
+
+You're given a **rotated sorted array** `nums` of **unique elements**.
+
+🔍 **Goal**: Return the **minimum element**.
+
+🕒 **Time Complexity Required**: O(log n)
+
+---
+
+## 💡 Approach: Binary Search
+
+### 🔹 Idea:
+
+* The array is **sorted and rotated**, so the smallest value will be the **rotation pivot**.
+* We can apply **binary search** to efficiently find this pivot point.
+
+---
+
+### 🔧 Steps:
+
+1. **If array is already sorted** (`nums[0] < nums[n - 1]`), return `nums[0]`.
+2. Perform **binary search**:
+
+   * Compute `mid = (start + end) / 2`
+   * If `nums[mid] < nums[mid - 1]`, then `nums[mid]` is the minimum.
+   * If `nums[mid] > nums[mid + 1]`, then `nums[mid + 1]` is the minimum.
+   * If `nums[start] <= nums[mid]`, the left part is sorted, so go right: `start = mid + 1`.
+   * Else, go left: `end = mid - 1`.
+
+---
+
+### 🔧 Code Snippet:
+
+```java
+int start = 0, end = nums.length - 1;
+while (start <= end) {
+    int mid = (start + end) / 2;
+
+    if (mid > 0 && nums[mid] < nums[mid - 1])
+        return nums[mid];
+    if (mid < nums.length - 1 && nums[mid] > nums[mid + 1])
+        return nums[mid + 1];
+
+    if (nums[start] <= nums[mid])
+        start = mid + 1;
+    else
+        end = mid - 1;
+}
+```
+
+---
+
+## ⏱ Time Complexity:
+
+* **O(log n)** — Binary search on the rotated array.
+
+## 🧠 Space Complexity:
+
+* **O(1)** — Constant space.
+
+---
+
+
+
+## 📌 Problem: Median of Two Sorted Arrays
+
+You're given two **sorted arrays** `nums1` and `nums2`.
+
+🔍 **Goal**: Return the **median** of the merged sorted array.
+
+🕒 **Expected Time Complexity**: **O(log (m+n))**
+👉 But your current approach runs in **O(m+n)** (merging), which is valid for interviews when optimal log-time is not required.
+
+---
+
+## 💡 Approach 1: Merge and Find Median (Simple but Not Optimal)
+
+### 🔹 Idea:
+
+* Merge the two sorted arrays into one sorted array.
+* Find the median of the merged array:
+
+  * If the length is **odd**, return the middle element.
+  * If the length is **even**, return the average of the two middle elements.
+
+---
+
+### 🧱 Steps:
+
+1. Use **two pointers** `p1`, `p2` to traverse both arrays.
+2. At each step, pick the **smaller value** and add to the result.
+3. Once merged, calculate the **median** based on array length:
+
+   * **Odd length**: `arr[n/2]`
+   * **Even length**: `(arr[n/2] + arr[n/2 - 1]) / 2`
+
+---
+
+### 🔧 Code Snippet:
+
+```java
+public static int[] merge(int[] num1, int[] num2) {
+    int[] ans = new int[num1.length + num2.length];
+    int p1 = 0, p2 = 0, p3 = 0;
+
+    while (p1 < num1.length || p2 < num2.length) {
+        int val1 = p1 < num1.length ? num1[p1] : Integer.MAX_VALUE;
+        int val2 = p2 < num2.length ? num2[p2] : Integer.MAX_VALUE;
+
+        if (val1 < val2) {
+            ans[p3++] = val1;
+            p1++;
+        } else {
+            ans[p3++] = val2;
+            p2++;
+        }
+    }
+
+    return ans;
+}
+```
+
+```java
+int[] merged = merge(nums1, nums2);
+int n = merged.length;
+
+if (n % 2 == 0) {
+    return (merged[n/2] + merged[n/2 - 1]) / 2.0;
+} else {
+    return merged[n/2];
+}
+```
+
+---
+
+## ✅ Example:
+
+### Input:
+
+`nums1 = [1,2]`, `nums2 = [3,5,6]`
+
+### Merged:
+
+`[1,2,3,5,6]`
+
+### Median:
+
+`3` (middle element of 5 elements)
+
+---
+
+## ⏱ Time Complexity:
+
+* **O(m + n)** for merging.
+
+## 🧠 Space Complexity:
+
+* **O(m + n)** for the new array.
+
+---
+
+## 🏁 Note:
+
+* This is not the **optimal** approach.
+* The **optimal** solution uses **binary search** and achieves **O(log(min(m,n)))**, which you can implement later for advanced optimization.
+
+---
+
+### 🔍 Problem: Search in Rotated Sorted Array
+
+You are given a rotated sorted array `nums` and an integer `target`. Your task is to find the index of the target element. If the element is not found, return `-1`.
+
+* You **must** use an algorithm with **O(log n)** time complexity.
+
+---
+
+### ✅ Approach: Modified Binary Search
+
+A **rotated sorted array** always has **one half sorted** — either the left or the right. Use this property to decide which half to search in.
+
+---
+
+### 🔧 Steps:
+
+1. Initialize two pointers: `start = 0`, `end = nums.length - 1`.
+2. Use a loop while `start <= end`:
+
+   * Find the middle index: `mid = (start + end) / 2`.
+   * If `nums[mid] == target`, return `mid`.
+   * If **left half is sorted** (`nums[start] <= nums[mid]`):
+
+     * If `target` lies in the left half (`target >= nums[start] && target < nums[mid]`):
+
+       * Move left: `end = mid - 1`.
+     * Else:
+
+       * Move right: `start = mid + 1`.
+   * Else (**right half is sorted**):
+
+     * If `target` lies in the right half (`target > nums[mid] && target <= nums[end]`):
+
+       * Move right: `start = mid + 1`.
+     * Else:
+
+       * Move left: `end = mid - 1`.
+3. If not found, return `-1`.
+
+---
+
+### 💡 Why This Works:
+
+Each time, you eliminate half of the array, like in normal binary search — hence the time complexity remains **O(log n)**.
+
+---
+
+### 📦 Example:
+
+```java
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+```
+
+The number `0` is found at index `4`.
+
+---
+
+### 🧠 Edge Cases:
+
+* `nums = [1]`, `target = 0` → return `-1`
+* `nums = [1,3]`, `target = 3` → return `1`
+
+---
+
+### 🔍 Problem: Search Insert Position
+
+Given a **sorted array** of **distinct integers** and a target value, return the **index if the target is found**.
+If not, return the index **where it would be inserted** to maintain the order.
+
+* Must be solved in **O(log n)** time complexity.
+
+---
+
+### ✅ Approach: Binary Search
+
+We apply binary search to either:
+
+* Find the index of the target.
+* Or find the correct insertion position if the target is not present.
+
+---
+
+### 🔧 Steps:
+
+1. Initialize two pointers:
+
+   * `start = 0`
+   * `end = nums.length - 1`
+2. Loop while `start <= end`:
+
+   * Compute `mid = (start + end) / 2`
+   * If `nums[mid] == target`: return `mid`
+   * If `nums[mid] < target`: search right → `start = mid + 1`
+   * If `nums[mid] > target`: search left → `end = mid - 1`
+3. If the loop ends and target isn’t found, return `start` — this is the correct insertion position.
+
+---
+
+### 💡 Why This Works:
+
+Binary search helps locate the **first number greater than target**, which is exactly where it should be inserted.
+The `start` pointer always ends at that position.
+
+---
+
+### 📦 Example:
+
+```java
+Input: nums = [1,3,5,6], target = 2
+Output: 1
+Explanation: 2 would be inserted between 1 and 3.
+```
+
+---
+
+### 🧠 Edge Cases:
+
+* `target` smaller than all → returns `0`
+* `target` larger than all → returns `nums.length`
+
+---
