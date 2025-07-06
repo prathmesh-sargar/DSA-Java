@@ -2943,3 +2943,270 @@ Explanation: 2 would be inserted between 1 and 3.
 * `target` larger than all → returns `nums.length`
 
 ---
+
+
+
+## 🍬 Problem: Candy Distribution
+
+You are given `n` children standing in a line, each with a **rating**. You must distribute candies to them according to the following rules:
+
+1. **Each child gets at least one candy**.
+2. A child with a **higher rating than their neighbor** must get **more candies**.
+
+---
+
+## ✅ Objective
+
+Return the **minimum number of candies** required to satisfy these rules.
+
+---
+
+## 📌 Approach: Two Pass Greedy Strategy
+
+### 🔹 Step 1: Initialization
+
+* Create a `candies[]` array and initialize **each child with 1 candy**.
+
+### 🔹 Step 2: Left to Right Pass
+
+* Traverse from left to right.
+* If `ratings[i] > ratings[i-1]`, then `candies[i] = candies[i-1] + 1`.
+
+This ensures **each child gets more candies than the left neighbor** if rated higher.
+
+### 🔹 Step 3: Right to Left Pass
+
+* Traverse from right to left.
+* If `ratings[i] > ratings[i+1]`, update:
+
+  ```java
+  candies[i] = max(candies[i], candies[i+1] + 1);
+  ```
+
+This ensures **each child gets more candies than the right neighbor** if rated higher, while **preserving the left-to-right assignment**.
+
+### 🔹 Step 4: Sum All Candies
+
+* Add up all the values in the `candies[]` array for the final result.
+
+---
+
+## 📦 Example
+
+### Input:
+
+```java
+ratings = [1, 0, 2]
+```
+
+### Execution:
+
+* Initial: `[1,1,1]`
+* Left to Right: `[1,1,2]`
+* Right to Left: `[2,1,2]`
+
+### Output:
+
+```java
+Total Candies = 2 + 1 + 2 = 5
+```
+
+---
+
+## ⏱️ Time & Space Complexity
+
+* **Time:** O(n)
+* **Space:** O(n) (for extra candies array)
+
+---
+
+## 🚀 Problem: Jump Game
+
+You are given an array `nums` where each element represents the **maximum jump length** at that position.
+You start at index `0` and need to determine **if you can reach the last index**.
+
+---
+
+## ✅ Objective
+
+Return `true` if it is possible to reach the **last index**, else return `false`.
+
+---
+
+## 🧠 Intuition
+
+We keep track of the **last position** from which we can jump to the end.
+We iterate **backward**, updating this position whenever a new index can jump to or beyond the last known good position.
+
+---
+
+## 🔍 Approach: Greedy from Right to Left
+
+### 🔹 Step-by-step:
+
+1. Start from the **end** of the array and move backwards.
+2. Maintain a variable `lastIndex` that tracks the **minimum index from which we can reach the end**.
+3. At each index `i`, if `i + nums[i] >= lastIndex`, we update `lastIndex = i`.
+4. After the loop, if `lastIndex == 0`, return `true`, else return `false`.
+
+---
+
+## 🔁 Example
+
+### Input:
+
+```java
+nums = [2,3,1,1,4]
+```
+
+### Process:
+
+* Start from last index → `lastIndex = 4`
+* At `i=3`: 3+1 >= 4 → update `lastIndex = 3`
+* At `i=2`: 2+1 < 3 → skip
+* At `i=1`: 1+3 >= 3 → update `lastIndex = 1`
+* At `i=0`: 0+2 >= 1 → update `lastIndex = 0`
+
+### Output:
+
+```java
+true (you can reach the last index)
+```
+
+---
+
+## 📦 Code: Java Implementation
+
+```java
+public class Jump_Game {
+    public static boolean reachLastIndex(int[] nums) {
+        int lastIndexPosition = nums.length - 1;
+
+        for (int i = nums.length - 2; i >= 0; i--) {
+            if (i + nums[i] >= lastIndexPosition) {
+                lastIndexPosition = i;
+            }
+        }
+
+        return lastIndexPosition == 0;
+    }
+
+    public static void main(String[] args) {
+        int[] jumpArray = {3, 2, 1, 0, 4};
+        boolean result = reachLastIndex(jumpArray);
+        System.out.println("Can reach last index: " + result);
+    }
+}
+```
+
+---
+
+## ⏱ Time & Space Complexity
+
+* **Time:** O(n) — single pass from end to start.
+* **Space:** O(1) — no extra space used.
+
+---
+
+## ⛽ Problem: Gas Station
+
+You’re given two integer arrays:
+
+* `gas[i]`: gas available at station `i`
+* `cost[i]`: gas required to go from station `i` to `i+1` (circularly)
+
+You need to find the **starting station index** from which you can complete the full circle **once**, or return `-1` if it's not possible.
+
+> **Note**: If a solution exists, it is guaranteed to be **unique**.
+
+---
+
+## 🧠 Intuition
+
+To complete the circuit:
+
+* The **total gas** should be at least equal to the **total cost**.
+* If at any point, the gas in the tank becomes negative, the current start station is not valid — restart from the next station.
+
+---
+
+## ✅ Approach: Greedy
+
+### 🔹 Step-by-step:
+
+1. **Check Feasibility**:
+
+   * If `totalGas < totalCost`, return `-1`.
+
+2. **Find Starting Index**:
+
+   * Initialize `startIndex = 0` and `currentGas = 0`
+   * Traverse all stations:
+
+     * At each station, calculate `currentGas += gas[i] - cost[i]`
+     * If `currentGas` goes below 0:
+
+       * Reset `currentGas = 0`
+       * Set `startIndex = i + 1` (start from next station)
+
+---
+
+## 💡 Why it works?
+
+If you can't reach station `i+1` from `i`, then any station between the old start and `i` can't be a valid start either (they would have less gas). So you safely move the start forward.
+
+---
+
+## 📦 Java Code
+
+```java
+public class Gas_Station {
+
+    public static int firstStartIndex(int[] gas, int[] cost) {
+        int totalGas = 0;
+        int totalCost = 0;
+
+        // 1. Calculate total gas and cost
+        for (int i = 0; i < gas.length; i++) {
+            totalGas += gas[i];
+            totalCost += cost[i];
+        }
+
+        // 2. If not enough gas overall, return -1
+        if (totalGas < totalCost) {
+            return -1;
+        }
+
+        // 3. Greedy: Find valid start index
+        int currentGas = 0;
+        int startIndex = 0;
+
+        for (int i = 0; i < gas.length; i++) {
+            currentGas += gas[i] - cost[i];
+
+            if (currentGas < 0) {
+                currentGas = 0;
+                startIndex = i + 1;
+            }
+        }
+
+        return startIndex;
+    }
+
+    public static void main(String[] args) {
+        int[] gas = {1, 2, 3, 4, 5};
+        int[] cost = {3, 4, 5, 1, 2};
+        int res = firstStartIndex(gas, cost);
+        System.out.println("Start index is: " + res); // Output: 3
+    }
+}
+```
+
+---
+
+## ⏱ Time & Space Complexity
+
+* **Time:** O(n) – One pass to calculate total, another to find start
+* **Space:** O(1) – Constant extra space
+
+---
