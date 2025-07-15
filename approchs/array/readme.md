@@ -3210,3 +3210,180 @@ public class Gas_Station {
 * **Space:** O(1) – Constant extra space
 
 ---
+
+
+##  ✅ Problem : Product of Array except self : 
+
+Given an integer array `nums`, return an array `answer` such that `answer[i]` is the product of all elements in `nums` **except** `nums[i]`.
+
+### 🔒 Constraints:
+
+* Must run in **O(n)** time.
+* **No division** allowed.
+
+---
+
+## 🧠 Intuition
+
+Use two passes:
+
+1. **Left product pass**: Store product of all elements **to the left** of current index.
+2. **Right product pass**: Multiply each element in result by product of elements **to the right**.
+
+---
+
+## ✅ Approach
+
+### 🔹 Step-by-step:
+
+1. Initialize an output array `ans` with `1`s.
+2. Traverse from left to right to fill left products.
+3. Traverse from right to left to multiply right products.
+
+---
+
+## 🧪 Sample Input/Output
+
+```txt
+Input:  [1, 2, 3, 4]
+Output: [24, 12, 8, 6]
+```
+
+---
+
+## 💻 Java Code (Optimized without extra space for left/right arrays)
+
+```java
+public class Product_Except_Self {
+    public static void productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] ans = new int[n];
+
+        // Step 1: Store left products in ans[]
+        ans[0] = 1;
+        for (int i = 1; i < n; i++) {
+            ans[i] = ans[i - 1] * nums[i - 1];
+        }
+
+        // Step 2: Multiply right products in-place
+        int rightProduct = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            ans[i] = ans[i] * rightProduct;
+            rightProduct *= nums[i];
+        }
+
+        // Output result
+        for (int val : ans) {
+            System.out.print(val + " ");
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 3, 4};
+        productExceptSelf(nums);  // Output: 24 12 8 6
+    }
+}
+```
+
+---
+
+## ⏱ Time & Space Complexity
+
+* **Time:** O(n)
+* **Space:** O(1) (excluding output array)
+
+---
+
+
+
+## ✅ Problem : Sprial Matrix 
+
+Given a 2D matrix, return all elements in **spiral order** (clockwise, starting from the top-left).
+
+---
+
+### 🧪 Example
+
+**Input:**
+
+```java
+matrix = [[1,2,3],
+          [4,5,6],
+          [7,8,9]]
+```
+
+**Output:**
+
+```
+[1, 2, 3, 6, 9, 8, 7, 4, 5]
+```
+
+---
+
+## ✅ Approach: Four Pointers Method
+
+We maintain four boundaries:
+
+* `rowBegin`: starting row
+* `rowEnd`: ending row
+* `colBegin`: starting column
+* `colEnd`: ending column
+
+We then keep updating these pointers as we traverse in this order:
+
+1. **Left to Right** (Top row)
+2. **Top to Bottom** (Right column)
+3. **Right to Left** (Bottom row) — *only if rows remain*
+4. **Bottom to Top** (Left column) — *only if columns remain*
+
+### 🔁 Continue until:
+
+```java
+rowBegin <= rowEnd && colBegin <= colEnd
+```
+
+---
+
+## 💻 Code Logic Sample
+
+```java
+int rowBegin = 0, rowEnd = matrix.length - 1;
+int colBegin = 0, colEnd = matrix[0].length - 1;
+
+while (rowBegin <= rowEnd && colBegin <= colEnd) {
+    
+    // Step 1: Traverse right
+    for (int i = colBegin; i <= colEnd; i++)
+        result.add(matrix[rowBegin][i]);
+    rowBegin++;
+
+    // Step 2: Traverse down
+    for (int i = rowBegin; i <= rowEnd; i++)
+        result.add(matrix[i][colEnd]);
+    colEnd--;
+
+    // Step 3: Traverse left (only if needed)
+    if (rowBegin <= rowEnd) {
+        for (int i = colEnd; i >= colBegin; i--)
+            result.add(matrix[rowEnd][i]);
+        rowEnd--;
+    }
+
+    // Step 4: Traverse up (only if needed)
+    if (colBegin <= colEnd) {
+        for (int i = rowEnd; i >= rowBegin; i--)
+            result.add(matrix[i][colBegin]);
+        colBegin++;
+    }
+}
+```
+
+---
+
+## ⏱ Time & Space Complexity
+
+* **Time:** O(m × n), where `m` is rows and `n` is columns.
+* **Space:** O(1) (excluding output list)
+
+---
+
