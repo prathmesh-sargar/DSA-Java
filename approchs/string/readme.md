@@ -289,3 +289,211 @@ This is a **perfect example of sliding window technique**. If you're good at thi
 * Longest repeating character replacement
 
 ---
+
+### ✅ Problem Statement:
+
+Given strings `s` and `p`, return all the **start indices** of `p`'s anagrams in `s`.
+
+---
+
+###  Key Concepts Used:
+
+* **Sliding Window**: A window of size `p.length()` slides over string `s`.
+* **Frequency Count**: Count of each character in both the window (sCount) and pattern (pCount).
+* **Comparing Arrays**: If both frequency arrays are equal, it means the current window is an anagram.
+
+---
+
+###  Step-by-Step Approach:
+
+#### 🔹 Step 1: Create a frequency count for `p`
+
+* Create an array `pCount[26]` to store character counts of pattern `p`.
+
+#### 🔹 Step 2: Use sliding window on `s`
+
+* Iterate through each character in `s`.
+* Maintain a window of size equal to `p.length()` by updating `sCount[26]`.
+
+#### 🔹 Step 3: Shrink the window when its size exceeds `p.length()`
+
+* Remove the character that is sliding out from the left of the window.
+
+#### 🔹 Step 4: Compare frequency arrays
+
+* If the current window’s frequency matches `pCount`, record the start index.
+
+---
+
+###  Dry Run Example:
+
+Let `s = "cbaebabacd"` and `p = "abc"`
+
+* `pCount = [1,1,1,...]` for a, b, c
+* Sliding window:
+
+  * `"cba"` → match → add `0`
+  * `"bae"` → no match
+  * `"aeb"` → no match
+  * ...
+  * `"bac"` → match → add `6`
+
+---
+
+###  Time and Space Complexity:
+
+* **Time:** O(n) where `n = s.length()` (each character is processed once)
+* **Space:** O(1) – only 26-length arrays used
+
+---
+
+###  Java Code (Optimized and Clean):
+
+```java
+public class Find_All_Anagrams_in_a_String {
+    public static List<Integer> findAnagrams(String s, String p) {
+        int[] pCount = new int[26];
+        int[] sCount = new int[26];
+        List<Integer> result = new ArrayList<>();
+
+        // Frequency count of pattern p
+        for (char c : p.toCharArray()) {
+            pCount[c - 'a']++;
+        }
+
+        for (int i = 0; i < s.length(); i++) {
+            // Add current char to sCount
+            sCount[s.charAt(i) - 'a']++;
+
+            // Remove char left out of window
+            if (i >= p.length()) {
+                sCount[s.charAt(i - p.length()) - 'a']--;
+            }
+
+            // Compare frequency arrays
+            if (Arrays.equals(pCount, sCount)) {
+                result.add(i - p.length() + 1);
+            }
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        String s = "cbaebabacd";
+        String p = "abc";
+        System.out.println(findAnagrams(s, p)); // Output: [0, 6]
+    }
+}
+```
+
+---
+
+### ✅ Summary:
+
+* Use sliding window + frequency count for optimal solution.
+* This avoids sorting or extra memory.
+* Works in linear time with constant space.
+
+Let me know if you want a visual explanation or animation-based dry run.
+
+
+
+
+### 🔍 ** ✅Problem: Minimum Window Substring**
+
+**Goal**: Find the smallest substring in `s` that contains all characters of string `t` (including duplicates).
+**Constraints**:
+
+* If no such substring exists, return `""`.
+* Time complexity should be better than brute force.
+
+---
+
+### **Approach (Optimized using Sliding Window + HashMap)**
+
+#### 1. **Understand the problem**
+
+We are given two strings:
+
+* `s` (the full string we search within)
+* `t` (the target string whose characters must appear in the window)
+
+We need to return the smallest window from `s` that contains all characters from `t`.
+
+---
+
+#### 2. **Create a frequency map for `t`**
+
+We first create a HashMap `mp` to store how many times each character appears in `t`.
+This helps us keep track of what characters are needed and how many of them are needed.
+
+```java
+for(char ch : t.toCharArray()){
+    mp.put(ch, mp.getOrDefault(ch, 0) + 1);
+}
+```
+
+---
+
+#### 3. **Use Two Pointers `i` and `j` to form the sliding window**
+
+* `j` is the end of the current window (expanding).
+* `i` is the start of the current window (shrinking).
+
+We move `j` one by one to include characters and try to match all characters from `t`.
+We reduce the required character count (`requireCount`) every time we match a character.
+
+---
+
+#### 4. **When all required characters are matched**
+
+That means `requireCount == 0`.
+Now we try to **shrink** the window from the left (`i++`) to find the smallest valid window.
+
+---
+
+#### 5. **Track the minimum window**
+
+We store:
+
+* `start_i`: starting index of smallest window found
+* `minWindowsize`: its length
+
+Update these when we find a new smaller valid window.
+
+---
+
+#### 6. **Shrinking logic**
+
+When shrinking the window, if we remove a character that is in `t` (map), we must **increase** `requireCount` again because we lost one needed character.
+
+---
+
+#### 7. **Final Result**
+
+After the loop ends, if `minWindowsize` is never updated (still `Integer.MAX_VALUE`), return empty string `""`.
+Else return the substring from `start_i` of length `minWindowsize`.
+
+```java
+return minWindowsize == Integer.MAX_VALUE ? "" : s.substring(start_i, start_i + minWindowsize);
+```
+
+---
+
+### ⏱️ **Time Complexity**
+
+* O(n + m): where n is the length of `s`, m is the length of `t`.
+* Each character is processed at most twice (once by `j`, once by `i`).
+
+---
+
+### ✅ **Example**
+
+**Input:**
+`s = "ADOBECODEBANC"`
+`t = "ABC"`
+
+**Output:** `"BANC"`
+Because it is the shortest window that contains A, B, and C.
+
