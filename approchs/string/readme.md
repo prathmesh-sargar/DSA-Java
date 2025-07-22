@@ -497,3 +497,156 @@ return minWindowsize == Integer.MAX_VALUE ? "" : s.substring(start_i, start_i + 
 **Output:** `"BANC"`
 Because it is the shortest window that contains A, B, and C.
 
+
+---
+
+### ✅ **Problem**
+
+You are given an array of strings.
+Your task is to **group all anagrams** together.
+An **anagram** is a word formed by rearranging the letters of another word.
+
+**Example:**
+Input: `["eat", "tea", "tan", "ate", "nat", "bat"]`
+Output: `[["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]`
+
+---
+
+###  **Approach**
+
+1. Anagrams will have **the same characters** when sorted.
+   For example: `"eat"`, `"tea"`, and `"ate"` all become `"aet"` after sorting.
+
+2. Use a **HashMap** where:
+
+   * Key = the **sorted string**
+   * Value = list of words that match that sorted string
+
+3. For each string:
+
+   * Convert it to a **character array**
+   * **Sort** the array
+   * Convert it back to a string (this becomes the key)
+   * Add the original string to the list of that key
+
+4. Finally, return all the values from the map.
+
+---
+
+###  **Sample Code (Logic)**
+
+```java
+Map<String, List<String>> map = new HashMap<>();
+
+for (String word : strs) {
+    char[] chars = word.toCharArray();
+    Arrays.sort(chars); // sort characters
+    String key = new String(chars); // use sorted string as key
+
+    if (!map.containsKey(key)) {
+        map.put(key, new ArrayList<>());
+    }
+    map.get(key).add(word); // group anagram
+}
+
+return new ArrayList<>(map.values()); // return grouped anagrams
+```
+
+---
+
+###  **Time Complexity (TC)**
+
+* Let `n` = number of strings
+* Let `k` = maximum length of a string
+
+⏱ **TC = O(n \* k log k)**
+
+* Sorting each string takes O(k log k)
+* You do this for all `n` strings → O(n \* k log k)
+
+---
+
+###  **Space Complexity (SC)**
+
+💾 **SC = O(n \* k)**
+
+* You store all the input strings grouped in the HashMap
+* In worst case, every string is unique → you store `n` groups, each with up to `k` characters
+
+---
+
+
+### ✅ **Problem**
+
+You are given two strings `s` and `t`.
+Check if they are **isomorphic**.
+
+Two strings are isomorphic if characters in `s` can be replaced to get `t`, **preserving order**.
+
+* No two characters in `s` can map to the **same** character in `t`, but a character can map to itself.
+
+---
+
+###  **Approach**
+
+1. Use **two HashMaps**:
+
+   * One to store the **first occurrence index** of each character in `s`
+   * One to store the **first occurrence index** of each character in `t`
+
+2. For each character in both strings:
+
+   * If the character is not already in the map, store its **index**
+   * Then, compare the mapped values from both maps
+   * If the values (first occurrence index) don’t match → return `false`
+
+3. If all characters match in mapping pattern → return `true`
+
+🔁 Example:
+
+* `s = "egg"`, `t = "add"`
+  First occurrences:
+
+  * `e` → index 0
+  * `g` → index 1 (both times)
+  * `a` → index 0
+  * `d` → index 1 (both times)
+    ✅ Matches pattern → return `true`
+
+---
+
+###  **Sample Code (Logic)**
+
+```java
+Map<Character, Integer> sMap = new HashMap<>();
+Map<Character, Integer> tMap = new HashMap<>();
+
+for (int i = 0; i < s.length(); i++) {
+    sMap.putIfAbsent(s.charAt(i), i);
+    tMap.putIfAbsent(t.charAt(i), i);
+
+    if (!sMap.get(s.charAt(i)).equals(tMap.get(t.charAt(i)))) {
+        return false;
+    }
+}
+return true;
+```
+
+---
+
+###  **Time Complexity (TC)**
+
+* Let `n = s.length()`
+  ⏱ **TC = O(n)**
+* One pass through both strings
+* All map operations are O(1) average
+
+---
+
+###  **Space Complexity (SC)**
+
+💾 **SC = O(n)**
+
+* At most 26 characters (for lowercase letters), but in worst case with Unicode or large inputs, both maps may store up to `n` entries
+
+---
