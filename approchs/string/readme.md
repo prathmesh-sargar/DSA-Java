@@ -962,3 +962,427 @@ public class First_Unique_Character_in_a_String {
 
   * `s = "zz"` → Output: `-1`
   * `s = "a"` → Output: `0`
+
+
+
+### ✅ Problem : String addition :
+
+You’re given **two non-negative strings `s1` and `s2`**, where each string represents a **non-negative integer**. You need to **add the numbers and return the result as a string**.
+
+📝 You **can’t** convert the strings to integers directly (like using `Integer.parseInt()`), because the number can be **very large** (like way beyond `int` or `long`).
+
+---
+
+### 💡 Approach:
+
+1. Start from the **rightmost digit** of both strings and move left.
+2. Add corresponding digits + carry.
+3. If the sum is ≥ 10, update the **carry**.
+4. Add the **current digit’s result** to a `StringBuilder`.
+5. Reverse the final result string to get the actual sum.
+
+➡️ You simulate how we do **manual addition** digit-by-digit — just like 2nd grade math but with code 😎
+
+---
+
+### ✅ Sample Code (Logic Only):
+
+```java
+public static String addition(String s1, String s2) {
+    int i = s1.length() - 1;
+    int j = s2.length() - 1;
+    int carry = 0;
+
+    StringBuilder sb = new StringBuilder();
+
+    while (i >= 0 || j >= 0 || carry != 0) {
+        int digit1 = (i >= 0) ? s1.charAt(i) - '0' : 0;
+        int digit2 = (j >= 0) ? s2.charAt(j) - '0' : 0;
+
+        int total = digit1 + digit2 + carry;
+        carry = total / 10;
+
+        sb.append(total % 10);
+        i--;
+        j--;
+    }
+
+    return sb.reverse().toString();
+}
+```
+
+---
+
+### 🧠 Time Complexity (TC):
+
+* **O(max(n, m))**, where `n = s1.length()` and `m = s2.length()`
+* Because we process each digit once, from right to left.
+
+---
+
+### 🧠 Space Complexity (SC):
+
+* **O(max(n, m))** for storing the result in `StringBuilder`.
+
+---
+
+### 🔍 Example:
+
+```java
+s1 = "120"
+s2 = "30"
+Output: "150"
+```
+
+💬 Why?
+
+```
+  120
++  30
+-----
+  150
+```
+
+---
+
+Of course Prathmesh! Let's break this down into a **clean, structured format** just like before – perfect for notes, interviews, or revision 🔥
+
+---
+
+### ✅ Problem : Multiplication of String 
+
+You are given **two non-negative integers as strings** `s1` and `s2`.
+You need to **multiply these strings** and return the result as a string.
+
+🛑 You can’t use built-in BigInteger, `parseInt()`, or similar conversion methods, because the input can be **very large**.
+
+---
+
+### 💡 Approach:
+
+This is like **manual multiplication**, the way we do it with pen and paper:
+
+1. Initialize an integer array of size `m + n`, where `m = s1.length()` and `n = s2.length()` — because the product of two digits can go up to length `m + n`.
+
+2. Reverse loop over both strings:
+
+   * Multiply digits at position `i` and `j`.
+   * The result is added to the array at positions:
+
+     * `p2 = i + j + 1` (unit place)
+     * `p1 = i + j` (carry/tens place)
+
+3. Store the multiplication result in the appropriate positions in the array (handle carry as well).
+
+4. Finally, skip leading zeros and convert the array to a string using `StringBuilder`.
+
+---
+
+###  Sample Code (Logic Only):
+
+```java
+public static String multiplyString(String s1, String s2) {
+    int m = s1.length();
+    int n = s2.length();
+
+    int[] arr = new int[m + n];
+
+    for (int i = m - 1; i >= 0; i--) {
+        for (int j = n - 1; j >= 0; j--) {
+            int mul = (s1.charAt(i) - '0') * (s2.charAt(j) - '0');
+
+            int p1 = i + j;
+            int p2 = i + j + 1;
+
+            int sum = mul + arr[p2];
+            arr[p1] += sum / 10;
+            arr[p2] = sum % 10;
+        }
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for (int p : arr) {
+        if (!(sb.length() == 0 && p == 0)) {
+            sb.append(p);
+        }
+    }
+
+    return sb.length() == 0 ? "0" : sb.toString();
+}
+```
+
+---
+
+### 📈 Time Complexity (TC):
+
+* **O(m × n)**
+  Because we loop through each digit of both strings once in a nested loop.
+
+---
+
+### 📦 Space Complexity (SC):
+
+* **O(m + n)**
+  For the array used to store intermediate results.
+
+---
+
+### 🔍 Example:
+
+```java
+s1 = "123"
+s2 = "10"
+```
+
+**Steps:**
+
+```
+      1 2 3
+    x   1 0
+  ---------
+      0 0 0   ← (123 × 0)
++ 1 2 3 0     ← (123 × 1, shifted)
+---------
+  1 2 3 0
+```
+
+✅ Final Output: `"1230"`
+
+---
+
+### ✅ Problem : Implement strstr
+
+Given two strings, **`haystack`** and **`needle`**, return the **index of the first occurrence** of `needle` in `haystack`, or `-1` if `needle` is **not part** of `haystack`.
+
+---
+
+### 💡 Approach 1: Built-in Function (Direct Method)
+
+Use Java's `indexOf()` function – quick and efficient.
+
+```java
+public static int strStr(String haystack, String needle) {
+    return haystack.indexOf(needle);
+}
+```
+
+✅ Best for coding rounds with time constraint.
+⛔ Not valid for low-level logic/algorithm interview.
+
+---
+
+### 💡 Approach 2: Sliding Window with StringBuilder (Custom Logic)
+
+👉 Create a sliding window of the size of `needle` inside `haystack`.
+👉 Use a `StringBuilder` to simulate this window and compare it to `needle`.
+
+#### Steps:
+
+1. Start with two pointers: `left` (start of window) and `right` (end of window).
+2. At each step, add `haystack[right]` to the window (`StringBuilder`).
+3. If the window becomes longer than `needle`, remove one character from the left.
+4. Compare the current window with `needle`.
+5. If matched, return `left`. If end of loop is reached, return `-1`.
+
+---
+
+###  Sample Code:
+
+```java
+public static int hardCodeLogic(String str1, String str2) {
+    StringBuilder sb = new StringBuilder();
+    int left = 0;
+
+    for (int right = 0; right < str1.length(); right++) {
+        sb.append(str1.charAt(right));
+
+        if (sb.length() > str2.length()) {
+            sb.deleteCharAt(0);  // shrink window from left
+            left++;
+        }
+
+        if (sb.toString().equals(str2)) {
+            return left;
+        }
+    }
+
+    return -1;
+}
+```
+
+---
+
+### 📈 Time Complexity:
+
+* **O(n × m)** in worst case (because `sb.toString()` creates a new string on each check)
+
+  * `n` = `haystack.length()`, `m` = `needle.length()`
+
+⏱ Slight optimization possible using char comparison instead of string conversion.
+
+---
+
+### 📦 Space Complexity:
+
+* **O(m)** for the StringBuilder (`m = needle.length()`)
+
+---
+
+### 🧪 Example Dry Run:
+
+```java
+haystack = "sqsadbutsad"
+needle = "sad"
+```
+
+Sliding window:
+
+```
+sq  -> not match  
+sqs -> not match  
+qsa -> not match  
+sad -> ✅ match found at index 2
+```
+
+✅ Output: `2`
+
+---
+
+### 🔥 BONUS TIP (Interview Insight):
+
+If you're in a **FAANG-level interview**, they may follow up with:
+
+* Implement KMP (Knuth-Morris-Pratt) for optimal TC: O(n + m)
+* Handle edge cases like empty `needle` or very large strings
+
+---
+
+
+### ✅ Problem : Zigzag Conversion
+
+You’re given a string `s` and an integer `numRows`.
+Write the string in a **zigzag pattern** on `numRows` like this:
+
+#### For `numRows = 3`:
+
+```
+P   A   H   N  
+A P L S I I G  
+Y   I   R
+```
+
+🔁 Read it **row-by-row**:
+🟢 Output: `"PAHNAPLSIIGYIR"`
+
+---
+
+### 💡 Approach:
+
+#### Key Idea:
+
+Simulate the **zigzag writing process** by keeping track of:
+
+* **Which row** you're currently on (`currRow`)
+* **Direction** you're moving in (`goingDown` boolean)
+
+#### Steps:
+
+1. Create an array of `StringBuilder`, one for each row.
+2. Loop over the string and **append each character to the current row**.
+3. If you’re at the top (`row 0`) or bottom (`row numRows-1`), **flip the direction**.
+4. After filling the rows, **combine all rows** to get the final string.
+
+---
+
+###  Sample Code:
+
+```java
+public static String zig_zaString(String s, int numRows) {
+    if (numRows == 1 || s.length() <= numRows) {
+        return s;
+    }
+
+    StringBuilder[] rows = new StringBuilder[numRows];
+    for (int i = 0; i < numRows; i++) {
+        rows[i] = new StringBuilder();
+    }
+
+    int currRow = 0;
+    boolean goingDown = false;
+
+    for (char ch : s.toCharArray()) {
+        rows[currRow].append(ch);
+
+        if (currRow == 0 || currRow == numRows - 1) {
+            goingDown = !goingDown;  // flip direction
+        }
+
+        currRow += goingDown ? 1 : -1;
+    }
+
+    StringBuilder res = new StringBuilder();
+    for (StringBuilder row : rows) {
+        res.append(row);
+    }
+
+    return res.toString();
+}
+```
+
+---
+
+### 📈 Time Complexity (TC):
+
+* **O(n)** — You go through the string once and append characters.
+
+---
+
+### 📦 Space Complexity (SC):
+
+* **O(n)** — To store all characters in separate rows before combining.
+
+---
+
+### 🧪 Examples:
+
+#### Example 1:
+
+```java
+Input: s = "PAYPALISHIRING", numRows = 3
+Output: "PAHNAPLSIIGYIR"
+```
+
+```
+Row 0: P   A   H   N  
+Row 1: A P L S I I G  
+Row 2: Y   I   R
+```
+
+#### Example 2:
+
+```java
+Input: s = "PAYPALISHIRING", numRows = 4
+Output: "PINALSIGYAHRPI"
+```
+
+```
+Row 0: P     I     N  
+Row 1: A   L S   I G  
+Row 2: Y A   H R  
+Row 3: P     I
+```
+
+#### Edge Case:
+
+```java
+Input: s = "A", numRows = 1
+Output: "A"
+```
+
+---
+
+### ⚠️ Interview Tip:
+
+This is all about **simulation** + **direction handling**
+No fancy data structure needed, just a good handle on loop logic and edge cases!
+
