@@ -1386,3 +1386,194 @@ Output: "A"
 This is all about **simulation** + **direction handling**
 No fancy data structure needed, just a good handle on loop logic and edge cases!
 
+
+
+Sure Prathmesh! Let’s break it down in a Gen-Z style that helps you understand and remember this easily 👇
+
+---
+
+### 🔐 Problem : **Decode String** 
+
+
+
+---
+
+### 🧠 Approach (Stack Based — Decode like a Boss 💪):
+
+We use **two stacks** to handle nested patterns:
+
+* One for **numbers** (how many times to repeat a substring).
+* One for **strings** (to keep track of string built so far).
+
+Here’s how we decode:
+
+1. Loop through each character:
+
+   * If it’s a **digit**, build the repeat count (can be multiple digits like `10[a]`).
+   * If it’s an opening bracket `[`, push the current `count` and `current string` to stacks.
+   * If it’s a closing bracket `]`, pop from stacks and build the decoded string.
+   * If it’s a normal character, just append to `currentString`.
+
+This helps especially with **nested brackets** like `"3[a2[c]]"`.
+
+---
+
+### 🔂 Sample Logic (Core Part of Code):
+
+```java
+for (char ch : s.toCharArray()) {
+    if (Character.isDigit(ch)) {
+        k = k * 10 + (ch - '0'); // build number
+    } else if (ch == '[') {
+        countStack.push(k);
+        stringStack.push(currentString);
+        k = 0;
+        currentString = "";
+    } else if (ch == ']') {
+        int repeat = countStack.pop();
+        StringBuilder sb = new StringBuilder(stringStack.pop());
+        for (int i = 0; i < repeat; i++) {
+            sb.append(currentString);
+        }
+        currentString = sb.toString();
+    } else {
+        currentString += ch;
+    }
+}
+```
+
+---
+
+### ⏱️ Time Complexity:
+
+**O(n)**
+We process each character once, and each string operation (append, pop, push) is constant time on average.
+
+---
+
+### 🧠 Space Complexity:
+
+**O(n)**
+We use stacks to store characters and repeat counts — at worst for all characters in input.
+
+
+
+Of course Prathmesh! Here's the breakdown of the **Integer to Roman** problem in your style — clean, simple, and effective ✨
+
+---
+
+### 🏷️ Problem : **Integer to Roman** 
+
+---
+
+### 🧠 Approach (Greedy Technique – Big to Small 🔁):
+
+We use a **greedy strategy**, where we keep subtracting the **largest possible Roman value** from the number until it reaches zero.
+
+Here’s the breakdown:
+
+1. Create **parallel arrays**:
+
+   * `values[]`: Roman numeral values in **descending** order.
+   * `symbols[]`: Corresponding Roman numeral characters.
+2. Loop through the `values[]`:
+
+   * While `num >= values[i]`, subtract it from `num` and append `symbols[i]` to the result.
+3. Repeat this until the number becomes 0.
+
+This ensures that we **always use the largest Roman symbol** available for the current number.
+
+---
+
+### 🧩 Sample Logic (Core Code Part Only):
+
+```java
+int[] values = {1000,900,500,400,100,90,50,40,10,9,5,4,1};
+String[] symbols = {"M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I"};
+
+StringBuilder sb = new StringBuilder();
+
+for (int i = 0; i < values.length; i++) {
+    while (num >= values[i]) {
+        num -= values[i];
+        sb.append(symbols[i]);
+    }
+}
+```
+
+---
+
+### ⏱️ Time Complexity:
+
+**O(1)**
+Because the maximum number is **3999**, and we loop through a **fixed-size array** of 13 symbols. It’s bounded — no matter what input we give.
+
+---
+
+### 🧠 Space Complexity:
+
+**O(1)**
+Only a small amount of memory is used for `StringBuilder` and arrays.
+
+---
+
+Absolutely Prathmesh! Let's break down **Roman to Integer** like a boss 👑— simple, effective, and with Gen-Z clarity 💯
+
+---
+
+### 🏷️ Problem :  **Roman to Integer**
+
+---
+
+### 🧠 Approach (Left-to-Right + Subtraction Rule 🧮):
+
+We're decoding Roman numerals using a **HashMap** and a simple scan of the string from **left to right**.
+
+Roman numerals have a special rule:
+👉 If a **smaller value comes before a bigger one**, you subtract it (like `IV = 5 - 1 = 4`).
+Otherwise, you **add** the value.
+
+---
+
+### ✅ Steps:
+
+1. Store all Roman characters and their integer values in a **HashMap**.
+2. Loop over the string:
+
+   * If the current symbol is **less than the next one**, **subtract** it from total.
+   * Else, **add** it to total.
+3. Return the total at the end.
+
+---
+
+### 🧩 Sample Logic (Core Code Part Only):
+
+```java
+Map<Character, Integer> mp = new HashMap<>();
+mp.put('I', 1); mp.put('V', 5); mp.put('X', 10); mp.put('L', 50);
+mp.put('C', 100); mp.put('D', 500); mp.put('M', 1000);
+
+int total = 0;
+for (int i = 0; i < s.length(); i++) {
+    int value = mp.get(s.charAt(i));
+    if (i + 1 < s.length() && value < mp.get(s.charAt(i + 1))) {
+        total -= value; // subtract if smaller before bigger
+    } else {
+        total += value; // otherwise just add
+    }
+}
+```
+
+---
+
+### ⏱️ Time Complexity:
+
+**O(n)** – Looping through the Roman string once (n = length of the string).
+
+---
+
+### 🧠 Space Complexity:
+
+**O(1)** – The HashMap is of fixed size (7 entries only), so it’s constant.
+
+---
