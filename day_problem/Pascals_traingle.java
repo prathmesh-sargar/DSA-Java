@@ -1,7 +1,7 @@
 import java.util.List;
 import java.util.ArrayList;
 
-public class Rascals_traingle{
+public class Pascals_traingle{
 
     public static List<List<Integer>> triangle(int numRows){
         List<List<Integer>> result = new ArrayList<>();
