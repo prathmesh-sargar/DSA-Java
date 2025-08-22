@@ -730,3 +730,572 @@ At `i = 2` (height = 5):
  Max area = **10**
 
 ---
+
+
+
+## ✅ Problem Name:  Online Stock Span (LeetCode 901)
+
+---
+
+## Approach:
+
+We are asked to calculate the **stock span** for each day, i.e.,
+How many consecutive days before today (including today) the stock price was **less than or equal to today’s price**.
+
+A **stack-based approach** works best:
+
+* Keep a **monotonic decreasing stack** of indices (prices in non-increasing order).
+* For each new price, pop elements from the stack while they are smaller or equal to the current price → because they don’t contribute to the span anymore.
+* The span is the difference between the current index and the index of the last greater element (if stack not empty). If the stack is empty, the span covers all previous days → `idx + 1`.
+* Push the current index to the stack.
+
+---
+
+## Logic in Code:
+
+```java
+class StockSpanner {
+    private Stack<Integer> stack;  // stores indices of prices
+    private List<Integer> prices;  // stores all prices
+    
+    public StockSpanner() {
+        stack = new Stack<>();
+        prices = new ArrayList<>();
+    }
+
+    public int next(int price) {
+        int idx = prices.size();    // current index
+        prices.add(price);
+
+        // Maintain decreasing stack (pop all smaller/equal prices)
+        while (!stack.isEmpty() && price >= prices.get(stack.peek())) {
+            stack.pop();
+        }
+
+        int span;
+        if (stack.isEmpty()) {
+            span = idx + 1; // covers all days so far
+        } else {
+            span = idx - stack.peek(); // distance from last greater price
+        }
+
+        stack.push(idx);
+        return span;
+    }
+}
+```
+
+---
+
+## Time Complexity (TC):
+
+* Each element is pushed **once** and popped **at most once**.
+* So across **n calls**, total work is **O(n)**.
+* For each `next` call → **Amortized O(1)**.
+
+---
+
+## Space Complexity (SC):
+
+* Stack stores indices → at most **O(n)** in worst case (strictly decreasing prices).
+* Prices list also stores all values → **O(n)**.
+* So, total **O(n)**.
+
+---
+
+
+### 📌 Problem Name: Remove All Adjacent Duplicates in String
+
+---
+
+### 🔑 Approach
+
+* Use a **stack** to simulate the process of removing adjacent duplicates.
+* Traverse the string one character at a time:
+
+  * If the stack is **not empty** and the **top element is equal** to the current character → **pop** it (remove duplicate).
+  * Otherwise → **push** the current character onto the stack.
+* At the end, the stack will contain the result but in **reverse order**, so use a `StringBuilder` to reconstruct the string.
+
+---
+
+### 📝 Sample Logic (Pseudo + Java snippet)
+
+```java
+public String removeDuplicates(String s) {
+    Stack<Character> stack = new Stack<>();
+    
+    for (char c : s.toCharArray()) {
+        if (!stack.isEmpty() && stack.peek() == c) {
+            stack.pop();  // remove duplicate
+        } else {
+            stack.push(c); // add character
+        }
+    }
+    
+    StringBuilder result = new StringBuilder();
+    while (!stack.isEmpty()) {
+        result.append(stack.pop());
+    }
+    
+    return result.reverse().toString();
+}
+```
+
+---
+
+### ⏱ Time Complexity (TC)
+
+* **O(n)** → Each character is pushed and popped at most once.
+
+### 🗂 Space Complexity (SC)
+
+* **O(n)** in worst case → if no duplicates exist, all characters stored in stack.
+
+
+
+Do you want me to also show you the **optimized approach without stack** (using just a `StringBuilder` as stack)? That’s often asked in interviews.
+
+---
+
+Perfect bro 💯 let’s document this one also in the same **interview-notes style**.
+
+---
+
+### ✅ Problem Name : Sum of Subarray Minimums
+
+---
+
+### 🔑 Approach
+
+We need to calculate the sum of the minimum element of every possible contiguous subarray.
+
+👉 Brute force way (checking all subarrays) would be **O(n²)** or **O(n³)** → not efficient.
+👉 Optimized approach uses **Monotonic Stack** to find:
+
+* **Next Smaller Element on the Left (NSL)** → nearest index to the left with smaller value.
+* **Next Smaller Element on the Right (NSR)** → nearest index to the right with smaller (or equal) value.
+
+Why?
+
+* Each element `arr[i]` will act as the **minimum** for some subarrays.
+* Count how many subarrays it contributes to by calculating:
+
+  * `leftDist = i - NSL[i]` → how many choices for left boundary.
+  * `rightDist = NSR[i] - i` → how many choices for right boundary.
+* Total subarrays where `arr[i]` is the minimum = `leftDist * rightDist`.
+* Contribution of `arr[i]` = `arr[i] * leftDist * rightDist`.
+
+Finally, add all contributions modulo **1e9+7**.
+
+---
+
+### 📝 Sample Logic (Pseudo + Java snippet)
+
+```java
+public int sumSubarrayMins(int[] arr) {
+    int n = arr.length;
+    int MOD = 1_000_000_007;
+    
+    int[] left = findLeftNextSmaller(arr, n);   // Nearest smaller index to left
+    int[] right = findRightNextSmaller(arr, n); // Nearest smaller index to right
+    
+    long total = 0;
+    for (int i = 0; i < n; i++) {
+        long leftDist = i - left[i];
+        long rightDist = right[i] - i;
+        long ways = leftDist * rightDist;
+        long contribution = (ways * arr[i]) % MOD;
+        total = (total + contribution) % MOD;
+    }
+    return (int) total;
+}
+
+fucntion() -----------------
+ public static int[] findLeftNextSmaller(int[] arr , int len){
+
+        int[]res = new int[len];
+        Stack<Integer> stack = new Stack<>();
+
+        for(int i=0;i<len;i++){
+
+            while (!stack.isEmpty() && arr[i] < arr[stack.peek()]) {
+                stack.pop();
+            }
+            if(stack.isEmpty()){
+                res[i] = -1;
+            }else {
+                res[i] = stack.peek();
+            }
+            stack.push(i);
+        }
+        
+        return res;
+    }
+
+    public static int[] findRightNextSmaller(int[] arr , int len){
+
+        int[]res = new int[len];
+        Stack<Integer> stack = new Stack<>();
+
+        for(int i = len-1;i>=0;i--){
+
+            while (!stack.isEmpty() && arr[i] >= arr[stack.peek()]) {
+                stack.pop();
+            }
+
+            if(stack.isEmpty()){
+                res[i] = len;
+            }else{
+                res[i] = stack.peek();
+            }
+            stack.push(i);
+        }
+        return res;
+    }
+
+
+```
+
+---
+
+### ⏱ Time Complexity (TC)
+
+* **O(n)** → Each element is pushed and popped once in monotonic stack for NSL and NSR.
+
+### 🗂 Space Complexity (SC)
+
+* **O(n)** → Arrays for `left` and `right` + stack usage.
+
+---
+
+
+
+### ✅ Problem Name : Backspace String Compare
+
+---
+
+### 🔑 Approach
+
+We need to compare two strings where `#` acts like a backspace. After applying all backspaces, check if the final strings are equal.
+
+👉 Naive way: Build both strings fully (using `Stack` or `StringBuilder`) → then compare.
+👉 Optimized way (your code): Traverse from **right to left**, count how many backspaces (`#`) we need to apply, and skip those characters instead of building the whole string step by step.
+
+Steps:
+
+1. Start from the end of the string.
+2. Maintain a `hashCount` (backspace count).
+3. If `#` → increase `hashCount`.
+4. If it’s a character:
+
+   * If `hashCount > 0` → skip it (backspace applied).
+   * Otherwise, append it to result.
+5. Reverse the built string at the end.
+6. Do this for both `s` and `t`, then compare.
+
+---
+
+### 📝 Sample Logic (Java snippet)
+
+```java
+public static String buildString(String str) {
+    StringBuilder sb = new StringBuilder();
+    int skip = 0;
+
+    for (int i = str.length() - 1; i >= 0; i--) {
+        char c = str.charAt(i);
+        if (c == '#') {
+            skip++;
+        } else {
+            if (skip > 0) {
+                skip--; // skip this char
+            } else {
+                sb.append(c);
+            }
+        }
+    }
+    return sb.reverse().toString();
+}
+
+public static boolean backspaceCompare(String s, String t) {
+    return buildString(s).equals(buildString(t));
+}
+```
+
+---
+
+### ⏱ Time Complexity (TC)
+
+* **O(n + m)** → where `n` = length of `s`, `m` = length of `t`.
+  (Each char is processed once).
+
+### 🗂 Space Complexity (SC)
+
+* **O(n + m)** in worst case if we store results in `StringBuilder`.
+* Can be optimized to **O(1)** by using **two pointers without building strings** (direct compare from right to left).
+
+---
+
+
+### ✅ Problem Name : Basic Calculator
+ (Evaluate Expression with `+`, `-`, and parentheses)
+
+---
+
+### 🔑 Approach
+
+We need to evaluate a string expression with:
+
+* Integers
+* `+`, `-` operators
+* Parentheses `()`
+
+👉 We can’t use `eval()`, so simulate the evaluation manually.
+
+Steps:
+
+1. Traverse each character in the string.
+2. **Digits** → build the current number `num` (take care of multi-digit numbers).
+3. **Operator `+` or `-`** → add the previously formed number (`sign * num`) to `result`, reset `num`, update `sign`.
+4. **Opening parenthesis `(`** → Push the current `result` and `sign` onto the stack, then reset `result` and `sign`.
+
+   * This is like starting a new sub-expression.
+5. **Closing parenthesis `)`** → Finish the current number, pop sign and previous result from stack, and combine them.
+6. At the end, add any remaining number into the result.
+
+---
+
+### 📝 Sample Logic (Java snippet)
+
+```java
+public static int calculate(String s) {
+    Stack<Integer> stack = new Stack<>();
+    int result = 0;
+    int num = 0;
+    int sign = 1; // +1 or -1
+
+    for (char ch : s.toCharArray()) {
+        if (Character.isDigit(ch)) {
+            num = num * 10 + (ch - '0'); // build number
+        } else if (ch == '+') {
+            result += sign * num;
+            num = 0;
+            sign = 1;
+        } else if (ch == '-') {
+            result += sign * num;
+            num = 0;
+            sign = -1;
+        } else if (ch == '(') {
+            stack.push(result); // save result so far
+            stack.push(sign);   // save sign before parenthesis
+            result = 0;
+            sign = 1;
+        } else if (ch == ')') {
+            result += sign * num; // finalize inside parenthesis
+            num = 0;
+            int prevSign = stack.pop();
+            int prevResult = stack.pop();
+            result = prevResult + prevSign * result;
+        }
+    }
+
+    if (num != 0) {
+        result += sign * num; // last number
+    }
+    return result;
+}
+```
+
+---
+
+### ⏱ Time Complexity (TC)
+
+* **O(n)** → One pass through the string.
+* Each character is processed once.
+
+### 🗂 Space Complexity (SC)
+
+* **O(n)** in worst case → when we store nested parentheses in the stack.
+
+---
+
+
+### 📌 Problem Name: Basic Calculator II
+ (Evaluate Expression with `+`, `-`, `*`, `/`)
+
+---
+
+### 🔑 Approach
+
+We need to evaluate expressions with **operator precedence**:
+
+* Multiplication `*` and Division `/` have higher priority.
+* Addition `+` and Subtraction `-` have lower priority.
+
+👉 Strategy:
+
+* Use a **stack** to store numbers.
+* Keep track of the **current number** (`num`) and the **last operator** (`opr`).
+* Traverse the string:
+
+  * If digit → build `num`.
+  * If operator (or last char):
+
+    * If previous `opr` was `+` → push `num`.
+    * If previous `opr` was `-` → push `-num`.
+    * If previous `opr` was `*` → pop top of stack, multiply with `num`, push result.
+    * If previous `opr` was `/` → pop top of stack, divide by `num`, push result (truncate toward zero).
+    * Reset `num` and update `opr`.
+* At the end, sum everything in the stack.
+
+---
+
+### 📝 Sample Logic (Java snippet)
+
+```java
+public static int calculate(String s) {
+    Stack<Integer> stack = new Stack<>();
+    int num = 0;
+    char opr = '+'; // default sign is '+'
+    int n = s.length();
+
+    for (int i = 0; i < n; i++) {
+        char ch = s.charAt(i);
+
+        if (Character.isDigit(ch)) {
+            num = num * 10 + (ch - '0');
+        }
+
+        // If operator or last character
+        if (!Character.isDigit(ch) && ch != ' ' || i == n - 1) {
+            if (opr == '+') {
+                stack.push(num);
+            } else if (opr == '-') {
+                stack.push(-num);
+            } else if (opr == '*') {
+                stack.push(stack.pop() * num);
+            } else if (opr == '/') {
+                stack.push(stack.pop() / num);
+            }
+            opr = ch;
+            num = 0;
+        }
+    }
+
+    int sum = 0;
+    while (!stack.isEmpty()) {
+        sum += stack.pop();
+    }
+    return sum;
+}
+```
+
+---
+
+### ⏱ Time Complexity (TC)
+
+* **O(n)** → one pass through the string, each number/operator processed once.
+
+### 🗂 Space Complexity (SC)
+
+* **O(n)** → stack stores numbers in worst case (all `+`/`-` operations).
+
+---
+
+### 📌 Problem Name: Design Browser History
+
+---
+
+### 🔑 Approach
+
+We need to simulate a browser’s history navigation system with the following operations:
+
+* **visit(url)** → Navigate to a new page, clear all forward history.
+* **back(steps)** → Move back up to `steps` pages, or as much as possible.
+* **forward(steps)** → Move forward up to `steps` pages, or as much as possible.
+
+👉 Idea:
+Use **two stacks**:
+
+* `backStack`: stores all pages you can go back to.
+* `forwardStack`: stores all pages you can go forward to.
+* `curr`: keeps track of the current page.
+
+Operations:
+
+1. **HomePage(url)** → set `curr` to homepage.
+2. **visit(url)** → push `curr` into `backStack`, update `curr`, and clear `forwardStack`.
+3. **back(steps)** → move elements from `backStack` to `forwardStack` until `steps` exhausted.
+4. **forward(steps)** → move elements from `forwardStack` to `backStack` until `steps` exhausted.
+
+---
+
+### 📝 Sample Logic (Java snippet)
+
+```java
+class BrowserHistory {
+    private Stack<String> backStack;
+    private Stack<String> forwardStack;
+    private String curr;
+
+    public BrowserHistory(String homepage) {
+        backStack = new Stack<>();
+        forwardStack = new Stack<>();
+        curr = homepage;
+    }
+
+    public void visit(String url) {
+        backStack.push(curr);
+        curr = url;
+        forwardStack.clear(); // clear forward history
+    }
+
+    public String back(int steps) {
+        while (!backStack.isEmpty() && steps > 0) {
+            forwardStack.push(curr);
+            curr = backStack.pop();
+            steps--;
+        }
+        return curr;
+    }
+
+    public String forward(int steps) {
+        while (!forwardStack.isEmpty() && steps > 0) {
+            backStack.push(curr);
+            curr = forwardStack.pop();
+            steps--;
+        }
+        return curr;
+    }
+}
+```
+
+---
+
+### Example Run
+
+```java
+BrowserHistory obj = new BrowserHistory("leetcode.com");
+obj.visit("google.com");
+obj.visit("facebook.com");
+obj.visit("instagram.com");
+
+System.out.println(obj.back(1));    // facebook.com
+System.out.println(obj.back(1));    // google.com
+System.out.println(obj.forward(2)); // instagram.com
+```
+
+---
+
+### ⏱ Time Complexity (TC)
+
+* **visit(url)** → O(1)
+* **back(steps)** → O(min(steps, size of backStack))
+* **forward(steps)** → O(min(steps, size of forwardStack))
+
+### 🗂 Space Complexity (SC)
+
+* **O(n)** → For storing history in stacks.
+
+---
