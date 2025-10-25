@@ -3,6 +3,7 @@
 class Node{
     int data;
     Node next;
+    public String val;
 
     Node(int data){
         this.data = data;
