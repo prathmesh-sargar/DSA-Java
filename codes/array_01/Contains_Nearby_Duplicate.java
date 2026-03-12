@@ -28,8 +28,8 @@ public class Contains_Nearby_Duplicate {
     }
     public static void main(String[] args) {
         
-        int[]nums = {1,2,3,1,2,3};
-        int k =2;
+        int[]nums = {1,2,3,1};
+        int k =3;
         boolean res = isDuplicate_K(nums, k);
         System.out.println("is Duplicate with ( i-j <= k ): "+res);
     }

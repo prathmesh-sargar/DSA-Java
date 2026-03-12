@@ -17,15 +17,15 @@ public class Container_with_most_water {
         int curr_area = 0;
 
         while (s <l){
-            int len;
+            int len_height;
             if(arr[s] <arr[l]){
-                len = arr[s];
-                curr_area = len *(l-s);
+                len_height = arr[s];
+                curr_area = len_height *(l-s);
                 max_area = Math.max(max_area,curr_area);
                 s++;
             }else{
-                len= arr[l];
-                curr_area = len *(l-s);
+                len_height= arr[l];
+                curr_area = len_height *(l-s);
                 max_area = Math.max(max_area,curr_area);
                 l--;
             }

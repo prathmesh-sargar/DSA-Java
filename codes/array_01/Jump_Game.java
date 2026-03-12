@@ -22,7 +22,7 @@ public class Jump_Game{
         return lastIndexPostion ==0;   
     }
     public static void main(String[] args) {
-        int[]jumarr = {3,2,1,0,4};
+        int[]jumarr = {2,3,1,1,4};
 
         boolean res = reachLastIndex(jumarr);
         System.out.println("reach to last Index : "+res);
